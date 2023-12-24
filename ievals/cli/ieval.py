@@ -8,6 +8,7 @@
 
 """
 import os
+import logging
 import argparse
 import pandas as pd
 from datasets import load_dataset
@@ -17,8 +18,11 @@ from ievals.modules.qa_evaluators.claude import Claude_Evaluator
 from ievals.modules.qa_evaluators.azure import Azure_Evaluator
 from ievals.modules.qa_evaluators.oai_complete import GPT_Evaluator
 from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
-from ievals.modules.qa_evaluators.hf_chat import HF_Chat_Evaluator
-from ievals.modules.qa_evaluators.hf_base import Qwen_Evaluator # we only use this for qwen base model
+try:
+    from ievals.modules.qa_evaluators.hf_chat import HF_Chat_Evaluator
+    from ievals.modules.qa_evaluators.hf_base import Qwen_Evaluator # we only use this for qwen base model
+except ImportError as e:
+    logging.info("huggingface and qwen models are not supported due to "+str(e))
 from ievals.exp_executer import run_exp
 
 def get_model_config():
