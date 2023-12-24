@@ -1,3 +1,3 @@
-recursive-include ievals *.py
-recursive-include ievals *.csv
-recursive-include ievals *.tsv
+include ievals *.py
+include ievals/*.csv
+include ievals/*.tsv
