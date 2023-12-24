@@ -4,11 +4,9 @@ import logging
 from tqdm import tqdm
 from time import sleep
 from openai import AzureOpenAI
-from dotenv import load_dotenv
 from .evaluator import Evaluator
 import opencc
 
-load_dotenv()
 
 
 class Azure_Evaluator(Evaluator):
