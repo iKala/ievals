@@ -21,15 +21,20 @@ from ievals.modules.qa_evaluators.hf_chat import HF_Chat_Evaluator
 from ievals.modules.qa_evaluators.hf_base import Qwen_Evaluator # we only use this for qwen base model
 from ievals.exp_executer import run_exp
 
-def get_tgi_prompt_config(model_name):
+def get_model_config():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    df = pd.read_csv(os.path.join(current_dir, "model_config.csv"))
+    up_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+    df = pd.read_csv(os.path.join(up_dir, "model_config.csv"))
     df.fillna("", inplace=True)
-    port_config = pd.read_csv("model_config.csv")
     valid_model_names = df["model_name"].tolist()
+    return valid_model_names, df
+
+def get_tgi_prompt_config(model_name):
+    valid_model_names, df = get_model_config()
     if model_name not in valid_model_names:
         return None, None
     prompt_config = df[df["model_name"] == model_name].iloc[0]
+    prompt_config.pop('model_name')
     return prompt_config
 
 def get_evaluator(model_name, series=""):
@@ -78,12 +83,19 @@ def get_parser():
     parser.add_argument("--ast_token", type=str, default="", help="assistant starting token")
     parser.add_argument("--eos_token", type=str, default="", help="end-of-sentence token usually its <|endoftext|> or </s>, but you have to verify from hf model tokenizer.json")
 
+
+    parser.add_argument("--hf_cache", type=str, default="", help="huggingface cache")
     return parser
 
 def main():
     parser = get_parser()
     args = parser.parse_args()
     model_name = args.model
+    if model_name == 'supported':
+        valid_model_names, _ = get_model_config()
+        print(valid_model_names)
+        exit(0)
+
     valid_choices = args.choices.split(',')
     eval_cls = get_evaluator(model_name, args.series)
     if 'TGI' in str(eval_cls):
@@ -115,7 +127,7 @@ def main():
     postfix = model_name.split('/')[-1]
     if args.top_k > 0:
         postfix += f"_top_{args.top_k}"
-    
+
     cache_path = None
     if args.cache:
         cache_path = '.cache'

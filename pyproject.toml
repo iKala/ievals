@@ -32,7 +32,14 @@ ieval = "ievals.cli.ieval:main"
 [tool.setuptools]
 packages = ["ievals"]
 
+[tool.setuptools.packages.find]
+where = ["ievals"]
+
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
 [tool.ruff]
 # Allow lines to be as long as 767 characters, this is currently the longest line
 # TODO: This should be brought down in the future
 line-length = 767
+

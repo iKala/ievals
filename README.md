@@ -2,7 +2,7 @@
 
 iEvals is a framework for evaluating chinese large language models (LLMs), especially performance in traditional chinese domain. Our goal was to provide an easy to setup and fast evaluation library for guiding the performance/use on existing chinese LLMs.
 
-Currently, we only supports evaluation for TMMLU+ however in the future we are exploring more domain, ie knowledge extensive dataset (CMMLU, C-Eval) as well as context retrieval and multi-conversation dataset.
+Currently, we only supports evaluation for [TMMLU+](https://huggingface.co/datasets/ikala/tmmluplus) however in the future we are exploring more domain, ie knowledge extensive dataset (CMMLU, C-Eval) as well as context retrieval and multi-conversation dataset.
 
 
 # Usage
@@ -39,6 +39,41 @@ ieval <your azure model name>  azure --api_key "<Your API Key>" --top_k 5
 ```
 
 We haven't experimented with instruction based model from azure yet, so for instruction based models, you will have to fallback to openai's models
+
+
+## Text generation inference
+
+In order to reduce download friction, we recommend using [text-generation-inference](https://github.com/huggingface/text-generation-inference) for inferencing open-weight models
+
+For example this would setup a simple tgi instance using docker
+
+```bash
+sudo docker run --gpus '"device=0"' \
+    --shm-size 1g -p 8020:80 \
+    -v /volume/saved_model/:/data ghcr.io/huggingface/text-generation-inference:1.1.0 \
+    --max-input-length 4000 \
+    --max-total-tokens 4096 \
+    --model-id  GeneZC/MiniChat-3B
+```
+Note: For 5 shot settings, one might need to supply more than 5200 max-input-length to fit in the entire prompt
+
+Once the server has warmed up, simply assign the models and IP:Port to the evaluation cli
+
+```
+ieval GeneZC/MiniChat-3B --ip_addr 172.21.10.105:8020
+```
+
+For custom models, you might need to provide tokens text for system, user, assistant and end of sentence.
+
+```
+ieval GeneZC/MiniChat-3B --ip_addr 172.21.10.105:8020 \
+    --sys_token "<s> [|User|] " \
+    --usr_token "<s> [|User|] " \
+    --ast_token "[|Assistant|]" \
+    --eos_token "</s>"
+```
+
+You can run `ieval supported` to check models which we have already included with chat prompt. (This feature will be deprecated once more models support format chat prompt function)
 
 
 # Coming soon
