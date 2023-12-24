@@ -1,0 +1,38 @@
+[project]
+name = "ievals"
+version = "1.0.0.post1"
+requires-python = ">=3.9"
+readme = "README.md"
+dependencies = [
+    "anthropic==0.7.2",
+    "openai>=1.0.0",
+    "datasets==2.15.0",
+    "pandas==2.1.3",
+    "numpy",
+    "pandas",
+    "google-generativeai==0.3.1",
+    "OpenCC==1.1.7",
+    "tqdm==4.66.1"
+]
+
+[project.urls]
+repository = "https://github.com/ikala-corp/ievals"
+
+[project.optional-dependencies]
+formatters = [
+    "black",
+    "isort",
+    "autoflake",
+    "ruff"
+]
+
+[project.scripts]
+ieval = "ievals.cli.ieval:main"
+
+[tool.setuptools]
+packages = ["ievals"]
+
+[tool.ruff]
+# Allow lines to be as long as 767 characters, this is currently the longest line
+# TODO: This should be brought down in the future
+line-length = 767
