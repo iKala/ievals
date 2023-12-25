@@ -23,6 +23,7 @@ try:
     from ievals.modules.qa_evaluators.hf_base import Qwen_Evaluator # we only use this for qwen base model
 except ImportError as e:
     logging.info("huggingface and qwen models are not supported due to "+str(e))
+from ievals.modules.qa_evaluators.ali_dashscope import DashScope_Evaluator
 from ievals.exp_executer import run_exp
 
 def get_model_config():
@@ -66,6 +67,8 @@ def get_evaluator(model_name, series=""):
         return HF_Chat_Evaluator
     elif 'Qwen' in model_name and 'base' in l_model_name:
         return Qwen_Evaluator
+    elif 'qwen' in model_name:
+        return DashScope_Evaluator
     return TGI_Evaluator
 
 
