@@ -69,7 +69,7 @@ ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020
 For custom models, you might need to provide tokens text for system, user, assistant and end of sentence.
 
 ```
-ieval GeneZC/MiniChat-3B --ip_addr 172.21.10.105:8020 \
+ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020 \
     --sys_token "<s> [|User|] " \
     --usr_token "<s> [|User|] " \
     --ast_token "[|Assistant|]" \
