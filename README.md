@@ -63,7 +63,7 @@ Note: For 5 shot settings, one might need to supply more than 5200 max-input-len
 Once the server has warmed up, simply assign the models and IP:Port to the evaluation cli
 
 ```
-ieval GeneZC/MiniChat-3B --ip_addr 172.21.10.105:8020
+ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020
 ```
 
 For custom models, you might need to provide tokens text for system, user, assistant and end of sentence.
