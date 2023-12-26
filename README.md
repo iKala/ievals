@@ -7,6 +7,11 @@ iEvals is a framework for evaluating chinese large language models (LLMs), espec
 
 Currently, we only support evaluation for [TMMLU+](https://huggingface.co/datasets/ikala/tmmluplus), however in the future we are exploring more domain, ie knowledge extensive dataset (CMMLU, C-Eval) as well as context retrieval and multi-conversation dataset.
 
+# Installation
+
+```bash
+pip install git+https://github.com/ikala-corp/ievals.git
+```
 
 # Usage
 
