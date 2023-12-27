@@ -5,8 +5,8 @@ from time import sleep
 import opencc
 from tqdm import tqdm
 from http import HTTPStatus
-import dashscope
 try:
+    import dashscope
     from dashscope import Generation
 except ImportError as e:
     logging.error('dashscope API not supported')
