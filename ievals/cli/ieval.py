@@ -67,10 +67,11 @@ def get_evaluator(model_name, series=""):
         return ChatGPT_Evaluator
     elif 'claude' in model_name:
         return Claude_Evaluator
-    elif 'Qwen' in model_name and 'chat' in l_model_name:
-        return HF_Chat_Evaluator
-    elif 'Qwen' in model_name and 'base' in l_model_name:
-        return Qwen_Evaluator
+    elif 'Qwen' in model_name:
+        if 'chat' in l_model_name:
+            return HF_Chat_Evaluator
+        else:
+            return Qwen_Evaluator
     elif 'qwen' in model_name:
         return DashScope_Evaluator
     return TGI_Evaluator
