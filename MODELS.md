@@ -8,7 +8,7 @@ Open weights models : we rely on tgi for inference, checkout **Text generation i
 ## OpenAI
 
 ```bash
-ieval gpt-3.5-turbo-0613 --series openai_chat --api_key "<Your OpenAI platform Key>" --top_k 5
+ieval gpt-3.5-turbo-0613 --series openai_chat --api_key "<Your OpenAI platform Key>"
 ```
 
 ```bash
