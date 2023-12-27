@@ -2,7 +2,9 @@
 
 Closed source API : OpenAI, Azure, Anthropic, Gemini
 
-Open weights models : we rely on tgi for inference, checkout **Text generation inference** for more details
+Open weights models : 
+1. We rely on tgi for inference, checkout [**Text generation inference**](#text-generation-inference) for more details.
+2. For Qwen models or other local models, please visit [**Qwen models or other local models**](#qwen-models-or-other-local-models) section.
 
 
 ## OpenAI
