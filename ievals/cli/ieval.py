@@ -127,6 +127,13 @@ def main():
             switch_zh_hans=args.switch_zh_hans,
             **prompt_config
         )
+    elif ('HF_Chat' in str(eval_cls)) or ('Qwen' in str(eval_cls)):
+        eval_ins = eval_cls(
+            choices=valid_choices,
+            k=args.top_k,
+            model_name=model_name,
+            switch_zh_hans=args.switch_zh_hans,
+        )
     else:
         eval_ins = eval_cls(
             choices=valid_choices,
