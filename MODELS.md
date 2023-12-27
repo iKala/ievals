@@ -35,7 +35,7 @@ ieval claude-instant-1  --api_key "<Anthropic API keys>"
 
 ```bash
 export AZURE_OPENAI_ENDPOINT="https://XXXX.azure.com/"
-ieval <your azure model name>  azure --api_key "<Your API Key>" --top_k 5
+ieval <your azure model name> --series azure --api_key "<Your API Key>" --top_k 5
 ```
 
 We haven't experimented with instruction based model from azure yet, so for instruction based models, you will have to fallback to openai's models
@@ -74,13 +74,13 @@ Note: For 5 shot settings, one might need to supply more than 5200 max-input-len
 
 Once the server has warmed up, simply assign the models and IP:Port to the evaluation cli
 
-```
+```bash
 ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020
 ```
 
 For custom models, you might need to provide tokens text for system, user, assistant and end of sentence.
 
-```
+```bash
 ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020 \
     --sys_token "<s> [|User|] " \
     --usr_token "<s> [|User|] " \
@@ -90,3 +90,14 @@ ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020 \
 
 You can run `ieval supported` to check models which we have already included with chat prompt. (This feature will be deprecated once more models support format chat prompt function)
 
+## Qwen models or other local models
+
+```bash
+CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --top_k 0
+```
+
+or 
+
+```bash
+CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat --top_k 0
+```
