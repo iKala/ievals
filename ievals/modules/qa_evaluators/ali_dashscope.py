@@ -9,7 +9,7 @@ try:
     import dashscope
     from dashscope import Generation
 except ImportError as e:
-    logging.error('dashscope API not supported')
+    logging.error("dashscope API not supported, ignore this if you aren't using dashscope")
 from .evaluator import Evaluator
 
 
