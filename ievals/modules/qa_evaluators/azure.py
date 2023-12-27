@@ -50,9 +50,7 @@ class Azure_Evaluator(Evaluator):
                 tmp[0]["content"] = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp[0]["content"]
                 if self.converter:
                     tmp[0]["content"] = self.converter.convert(tmp[0]["content"])
-            if len(prompt) + len(tmp) > 4096:
-                break
-            else:
+
                 prompt += tmp
 
         return prompt
