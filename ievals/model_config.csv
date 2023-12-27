@@ -1,0 +1,52 @@
+model_name,systemMessageToken,messageEndToken,assistantMessageToken,userMessageToken
+deepseek-ai/deepseek-llm-7b-chat,,\n\n,Assistant:,User:
+deepseek-ai/deepseek-coder-6.7b-instruct,,\n<|EOT|>\n,### Response:\n,### Instruction:\n
+deepseek-ai/deepseek-llm-67b-base,,\n\n,\n答案：,
+CausalLM/14B,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+CausalLM/7B,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+CausalLM/7B-DPO-alpha,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+Skywork/Skywork-13B-Math,,\n\n,\n答案：,
+Skywork/Skywork-13B-base,,\n\n,\n答案：,
+baichuan-inc/Baichuan2-7B-Chat,<reserved_106>,<|im_end|>,<reserved_107>,<reserved_106>
+bigscience/bloomz-7b1,,\n\n,\n答案：,
+GeneZC/MiniChat-3B,<s> [|User|] ,</s>,[|Assistant|],<s> [|User|] 
+yentinglin/Taiwan-LLM-7B-v2.1-chat,,</s>, ASSISTANT: , USER: 
+LinkSoul/Chinese-Llama-2-7b,[INST] <<SYS>>\n,\n,[/INST],<</SYS>>\n\n
+hfl/chinese-llama-2-13b-16k,,\n\n,### Response:\n,### Instruction:\n
+hfl/chinese-llama-2-7b-16k,,\n\n,### Response:\n,### Instruction:\n
+hfl/chinese-llama-2-lora-13b-16k,,\n\n,### Response:\n,### Instruction:\n
+microsoft/Orca-2-13b,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+01-ai/Yi-34B,,\n\n,\n答案：,
+01-ai/Yi-6B,,\n\n,\n答案：,
+01-ai/Yi-34B-Chat,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+yentinglin/Taiwan-LLM-13B-v2.0-chat,,</s>, ASSISTANT: , USER: 
+yentinglin/Taiwan-LLM-13B-v2.0-base,,\n\n,\n答案：,
+yentinglin/Taiwan-LLM-7B-v2.0-base,,\n\n,\n答案：,
+deepseek-ai/deepseek-llm-67b-base,,\n\n,\n答案：,
+deepseek-ai/deepseek-llm-67b-chat,,<｜end▁of▁sentence｜>, ASSISTANT: , USER: 
+ikala/bloom-zh-3b-chat,<|prompter|>,</s>,<|assistant|>,<|prompter|>
+Qwen/Qwen-72B-Chat,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+Qwen/Qwen-72B,,\n\n,\n答案：,
+Qwen/Qwen-7B-Chat,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+Qwen/Qwen-1_8B,,\n\n,\n答案：,
+Qwen/Qwen-1_8B-Chat,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
+vivo-ai/BlueLM-7B-Chat-32K,,\n,[|AI|]:,[|Human|]:
+vivo-ai/BlueLM-7B-Base,,\n\n,\n答案：,
+vivo-ai/BlueLM-7B-Chat,,\n,[|AI|]:,[|Human|]:
+TigerResearch/tigerbot-70b-chat-v2,,\n\n,### Response:\n,### Instruction:\n
+TigerResearch/tigerbot-70b-base,,\n\n,\n答案：,
+TigerResearch/tigerbot-70b-base-v2,,\n\n,\n答案：,
+TigerResearch/tigerbot-13b-base,,\n\n,\n答案：,
+TigerResearch/tigerbot-13b-chat-v3,,\n\n,### Response:\n,### Instruction:\n
+TigerResearch/tigerbot-13b-chat,,\n\n,### Response:\n,### Instruction:\n
+TigerResearch/tigerbot-7b-base,,\n\n,\n答案：,
+TigerResearch/tigerbot-7b-chat,,\n\n,### Response:\n,### Instruction:\n
+THUDM/chatglm3-6b,<|system|>,,<|assistant|>,<|user|>
+THUDM/chatglm2-6b,,\n\n,答：,问：
+LinkSoul/Chinese-Llama-2-7b,,</s>,[/INST],[INST]
+hongyin/mistral-7b-80k,,\n,\n答案：,问题：
+OpenBuddy/openbuddy-mistral-7b-v13.1,,\n,Assistant: , User: 
+Azure99/blossom-v3_1-mistral-7b,,\n,|Bot|:,|Human|: 
+SUSTech/SUS-Chat-34B,,\n\n,### Assistant:,### Human: 
+FlagAlpha/Atom-7B,,\n,\n答案：,问题：
+hfl/chinese-alpaca-2-7b,[INST] <<SYS>>\n,[/INST],[INST],
