@@ -52,7 +52,7 @@ class TGI_Evaluator(Evaluator):
             ]
 
     def generate_few_shot_prompt(self, subject, dev_df, cot=False):
-        prompt = [{"role": "system", "content": f"你是一位專業的中文AI主力，以下是關於{subject}考試單選題，請選出正確的答案。"}]
+        prompt = [{"role": "system", "content": f"你是一位專業的中文AI助理，以下是關於{subject}考試單選題，請選出正確的答案。"}]
         k = self.k
         if self.k == -1:
             k = dev_df.shape[0]
@@ -71,7 +71,7 @@ class TGI_Evaluator(Evaluator):
         if few_shot:
             few_shot_prompt = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
         else:
-            few_shot_prompt = [{"role": "system", "content": f"你是一位專業的中文AI主力，以下是關於{subject_name}考試單選題，請選出正確的答案。"}]
+            few_shot_prompt = [{"role": "system", "content": f"你是一位專業的中文AI助理，以下是關於{subject_name}考試單選題，請選出正確的答案。"}]
         answers = list(test_df["answer"])
         for row_index, row in tqdm(test_df.iterrows(), total=len(test_df), dynamic_ncols=True):
             question = self.format_example(row, include_answer=False)
@@ -182,6 +182,7 @@ class TGI_Evaluator(Evaluator):
             r"([A-D]).",
             r"答案：([A-D])",
             r"([A-D]). ",
+            r"^選([A-D])",
             r"^选([A-D])",
             r"^选项([A-D])",
             r"^選項([A-D])",
