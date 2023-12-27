@@ -95,9 +95,8 @@ class Azure_Evaluator(Evaluator):
                     sleep(5)
                     continue
 
-            if response == None:
-                response_str = ""
-            else:
+            response_str = ""
+            if response != None:
                 response_str = response.choices[0].message.content
 
             if cot:
@@ -122,14 +121,22 @@ class Azure_Evaluator(Evaluator):
                     else:
                         correct = 0
             else:
-                response_str = response_str.strip()
+                if response_str is None:
+                    response_str = ""
+                else:
+                    response_str = response_str.strip()
                 if few_shot:
                     if len(response_str) > 0:
                         if self.exact_match(response_str, row["answer"]):
                             correct_num += 1
                             correct = 1
                         else:
-                            correct = 0
+                            ans_list = self.extract_ans(response_str)
+                            if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
+                                correct_num += 1
+                                correct = 1
+                            else:
+                                correct = 0
                     else:
                         correct = 0
                 else:

@@ -1,6 +1,6 @@
 [project]
 name = "ievals"
-version = "1.0.0.alpha"
+version = "1.0.1"
 requires-python = ">=3.9"
 readme = "README.md"
 dependencies = [

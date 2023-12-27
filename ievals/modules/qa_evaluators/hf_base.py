@@ -14,11 +14,11 @@ from .evaluator import Evaluator
 
 
 class Qwen_Evaluator(Evaluator):
-    def __init__(self, choices, k, model_name, switch_zh_hant=False):
+    def __init__(self, choices, k, model_name, switch_zh_hans=False):
         super(Qwen_Evaluator, self).__init__(choices, model_name, k)
         self.converter = None
-        if switch_zh_hant:
-            self.converter = opencc.OpenCC("s2t.json")
+        if switch_zh_hans:
+            self.converter = opencc.OpenCC("t2s.json")
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name, pad_token="<|extra_0|>", eos_token="<|endoftext|>", padding_side="left", trust_remote_code=True
         )

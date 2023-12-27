@@ -9,21 +9,22 @@ from .evaluator import Evaluator
 
 
 class HF_Chat_Evaluator(Evaluator):
-    def __init__(self, choices, k, model_name, switch_zh_hant=False):
+    def __init__(self, choices, k, model_name, switch_zh_hans=False):
         super(HF_Chat_Evaluator, self).__init__(choices, model_name, k)
         self.converter = None
-        if switch_zh_hant:
-            self.converter = opencc.OpenCC("s2t.json")
+        if switch_zh_hans:
+            self.converter = opencc.OpenCC("t2s.json")
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", trust_remote_code=True).eval()
-        self.model.generation_config.do_sample = False  # use greedy decoding
-        self.model.generation_config.repetition_penalty = 1.0  # disable repetition penalty
+        self.model.generation_config.do_sample = False
+        self.model.generation_config.repetition_penalty = 1.0
 
-    def format_example(self, line, include_answer=False, cot=False):
-        example = line["question"] + "\n\n"
+    def format_example(self, line, include_answer=True, cot=False):
+        example = "問題：" + line["question"] + "\n\n"
         for choice in self.choices:
             example += f'{choice}. {line[f"{choice}"]}\n'
-    
+
+        example += "\n答案："
         history = []
         if include_answer:
             if cot:
@@ -33,7 +34,8 @@ class HF_Chat_Evaluator(Evaluator):
                 example += "\n答案：" + line["answer"] + "\n\n"
         else:
             example += "\n答案："
-
+        if len(history) == 0:
+            history = None
         return example, history
 
     def generate_few_shot_prompt(self, subject, dev_df, cot=False):
@@ -45,12 +47,12 @@ class HF_Chat_Evaluator(Evaluator):
         for i in range(k):
             tmp, history = self.format_example(dev_df.iloc[i, :], cot=cot)
             if i == 0:
-                tmp= f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
+                tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
             prompt += tmp
             if cot and len(history) > 0:
                 history_prompt.extend(history)
         if not cot:
-            history_prompt=None
+            history_prompt = None
         return prompt, history_prompt
 
     def eval_subject(self, subject_name, test_df, dev_df=None, few_shot=False, save_result_dir=None, cot=False):
@@ -59,14 +61,14 @@ class HF_Chat_Evaluator(Evaluator):
             result = []
             score = []
 
-        history_prompt = None
+        q_history = None
         if few_shot:
-            few_shot_prompt, history_prompt = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
+            few_shot_prompt, _ = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
         else:
             few_shot_prompt = ""
         answers = list(test_df["answer"])
-        for row_index, row in tqdm(test_df.iterrows(), total=len(test_df), dynamic_ncols=True):
-            question, _ = self.format_example(row, include_answer=False)
+        for row_index, row in tqdm(test_df.iterrows(), total=len(test_df)):
+            question, q_history = self.format_example(row, include_answer=False)
             full_prompt = few_shot_prompt + question
             response = None
             timeout_counter = 0
@@ -77,10 +79,11 @@ class HF_Chat_Evaluator(Evaluator):
 
             while response is None and timeout_counter <= 30:
                 try:
-                    response, _ = self.model.chat(self.tokenizer, full_prompt, history=history_prompt)
+                    response, _ = self.model.chat(self.tokenizer, full_prompt, history=q_history)
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
+                    print(msg)
                     sleep(5)
                     continue
 
@@ -111,25 +114,15 @@ class HF_Chat_Evaluator(Evaluator):
                         correct = 0
             else:
                 response_str = response_str.strip()
-                if few_shot:
-                    if len(response_str) > 0:
-                        if self.exact_match(response_str, row["answer"]):
-                            correct_num += 1
-                            correct = 1
-                        else:
-                            correct = 0
+                if len(response_str) > 0:
+                    ans_list = self.extract_ans(response_str)
+                    if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
+                        correct_num += 1
+                        correct = 1
                     else:
                         correct = 0
                 else:
-                    if len(response_str) > 0:
-                        ans_list = self.extract_ans(response_str)
-                        if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
-                            correct_num += 1
-                            correct = 1
-                        else:
-                            correct = 0
-                    else:
-                        correct = 0
+                    correct = 0
             if save_result_dir:
                 result.append(response_str)
                 score.append(correct)

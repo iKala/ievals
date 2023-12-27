@@ -132,7 +132,12 @@ class DashScope_Evaluator(Evaluator):
                             correct_num += 1
                             correct = 1
                         else:
-                            correct = 0
+                            ans_list = self.extract_ans(response_str)
+                            if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
+                                correct_num += 1
+                                correct = 1
+                            else:
+                                correct = 0
                     else:
                         correct = 0
                 else:
@@ -204,3 +209,50 @@ class DashScope_Evaluator(Evaluator):
             else:
                 break
         return ans_list
+
+if __name__ == "__main__":
+    evaluator = DashScope_Evaluator([], 0, '', 'qwen-max')
+    ans = evaluator.extract_ans("""C
+\( \lim_{x \to \infty} (\sqrt{x^2 + 11x} - x) = ? \)
+A. \( 37 \)
+B. \( \frac{111}{5} \)
+C. \( \frac{11}{2} \)
+D. \( \frac{111}{4} \)
+答案：
+C
+如果 \( u \) 和 \( v \) 正交，則 \( u \cdot v = 0 \)。\( S^\perp \) 是 \( \mathbb{R}^n \) 中所有與 \( S \) 中每個向量都正交的向量集合。考慮集合
+\( S = \left\{ \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} \in \mathbb{R}^3 : x_1 - x_2 + x_3 = 0 \right\} \)。選擇以下正確的陳述。
+A. \( S \) 是 \( \mathbb{R}^3 \) 的一個子空間且 \( \text{dim}S = 1 \)
+B. \( \begin{bmatrix} 1 \\ -1 \\ 1 \end{bmatrix} \in S \)
+C. 設 \( \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} = w + z \) 使得 \( w \in S \) 並且 \( z \in S^\perp \)，則 \( z = \begin{bmatrix} 1/3 \\ -1/3 \\ 1/3 \end{bmatrix} \)。
+D. \( \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} \in S^\perp \)
+答案：
+C
+\( f(x) = \left\{
+\begin{array}{ll}
+\frac{x^4 - 1}{x^2 - 1}, & x \neq \pm1 \\
+a, & x = 1 \\
+b, & x = -1
+\end{array}
+\right. \)，若 \( f(x) \) 在 \( x=\pm1 \) 處連續，則 \( \frac{a}{b} \) 的值為何？
+A. 2
+B. 4
+C. 3
+D. 1
+答案：
+D
+行使得 \( A = \begin{bmatrix} 1 & -3 & 4 & -2 & 5 \\ 2 & -6 & 9 & -1 & 8 \\ 2 & -6 & 9 & -1 & 9 \\ -1 & 3 & -4 & 2 & -5 \end{bmatrix} \), 則下列選項中何者為矩陣 A 的秩 (rank)？
+A. 1
+B. 2
+C. 3
+D. 4
+答案：
+C
+2已知\(X\)和\(Y\)的聯合機率密度函數 (Joint probability density function) 為 \[ f_{X,Y}(x,y) = \begin{cases} 2, & 0 \leq y \leq x \leq 1 \\ 0, & 其他 \end{cases} \] 下列何者錯誤？
+A. 在 0 ≤ x ≤1 ， fX( x) = 2 x
+B. 條件機率密度函數 \[ f_{Y|X}(y|x) = \begin{cases} \frac{1}{x}, & 0 \leq y \leq x \leq 1 \\ 0, & 其他 \end{cases} \]
+C. 條件機率密度函數 \[ f_{X|Y}(x|y) = \begin{cases} \frac{1}{y}, & 0 \leq y \leq x \leq 1 \\ 0, & 其他 \end{cases} \]
+D. 在 0 ≤ y ≤1 ， fY( y) = 2(1 - y)
+答案：
+D""")
+    print(ans)
