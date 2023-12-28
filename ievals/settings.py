@@ -5,9 +5,23 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 categories = {
-    "STEM": ["physics", "chemistry", "biology", "computer science", "math", "engineering"],
+    "STEM": [
+        "physics",
+        "chemistry",
+        "biology",
+        "computer science",
+        "math",
+        "engineering",
+    ],
     "humanities": ["history", "philosophy", "law"],
-    "social sciences": ["politics", "culture", "economics", "geography", "psychology", "education"],
+    "social sciences": [
+        "politics",
+        "culture",
+        "economics",
+        "geography",
+        "psychology",
+        "education",
+    ],
     "other (business, health, misc.)": ["other", "business", "health"],
 }
 

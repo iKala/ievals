@@ -14,8 +14,12 @@ class HF_Chat_Evaluator(Evaluator):
         self.converter = None
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", trust_remote_code=True).eval()
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name, trust_remote_code=True
+        )
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name, device_map="auto", trust_remote_code=True
+        ).eval()
         self.model.generation_config.do_sample = False
         self.model.generation_config.repetition_penalty = 1.0
 
@@ -55,7 +59,15 @@ class HF_Chat_Evaluator(Evaluator):
             history_prompt = None
         return prompt, history_prompt
 
-    def eval_subject(self, subject_name, test_df, dev_df=None, few_shot=False, save_result_dir=None, cot=False):
+    def eval_subject(
+        self,
+        subject_name,
+        test_df,
+        dev_df=None,
+        few_shot=False,
+        save_result_dir=None,
+        cot=False,
+    ):
         correct_num = 0
         if save_result_dir:
             result = []
@@ -63,7 +75,9 @@ class HF_Chat_Evaluator(Evaluator):
 
         q_history = None
         if few_shot:
-            few_shot_prompt, _ = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
+            few_shot_prompt, _ = self.generate_few_shot_prompt(
+                subject_name, dev_df, cot=cot
+            )
         else:
             few_shot_prompt = ""
         answers = list(test_df["answer"])
@@ -79,7 +93,9 @@ class HF_Chat_Evaluator(Evaluator):
 
             while response is None and timeout_counter <= 30:
                 try:
-                    response, _ = self.model.chat(self.tokenizer, full_prompt, history=q_history)
+                    response, _ = self.model.chat(
+                        self.tokenizer, full_prompt, history=q_history
+                    )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
@@ -131,7 +147,11 @@ class HF_Chat_Evaluator(Evaluator):
         if save_result_dir:
             test_df["model_output"] = result
             test_df["correctness"] = score
-            test_df.to_csv(os.path.join(save_result_dir, f"{subject_name}_val.csv"), encoding="utf-8", index=False)
+            test_df.to_csv(
+                os.path.join(save_result_dir, f"{subject_name}_val.csv"),
+                encoding="utf-8",
+                index=False,
+            )
         return correct_ratio
 
     def extract_ans(self, response_str):
