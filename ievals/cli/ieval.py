@@ -152,6 +152,7 @@ def main():
         eval_ins = eval_cls(
             choices=valid_choices,
             k=args.top_k,
+            api_key=args.api_key,
             model_name=model_name,
             switch_zh_hans=args.switch_zh_hans,
         )

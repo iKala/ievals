@@ -9,16 +9,19 @@ from .evaluator import Evaluator
 
 
 class HF_Chat_Evaluator(Evaluator):
-    def __init__(self, choices, k, model_name, switch_zh_hans=False):
+    def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(HF_Chat_Evaluator, self).__init__(choices, model_name, k)
         self.converter = None
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
         self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name, trust_remote_code=True
+            model_name, trust_remote_code=True, use_auth_token=api_key
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            model_name, device_map="auto", trust_remote_code=True
+            model_name,
+            device_map="auto",
+            trust_remote_code=True,
+            use_auth_token=api_key,
         ).eval()
         self.model.generation_config.do_sample = False
         self.model.generation_config.repetition_penalty = 1.0

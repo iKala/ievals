@@ -14,7 +14,7 @@ from .evaluator import Evaluator
 
 
 class Qwen_Evaluator(Evaluator):
-    def __init__(self, choices, k, model_name, switch_zh_hans=False):
+    def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(Qwen_Evaluator, self).__init__(choices, model_name, k)
         self.converter = None
         if switch_zh_hans:
@@ -25,15 +25,20 @@ class Qwen_Evaluator(Evaluator):
             eos_token="<|endoftext|>",
             padding_side="left",
             trust_remote_code=True,
+            use_auth_token=api_key,
         )
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             device_map="auto",
             pad_token_id=self.tokenizer.pad_token_id,
             trust_remote_code=True,
+            use_auth_token=api_key,
         ).eval()
         self.model.generation_config = GenerationConfig.from_pretrained(
-            model_name, pad_token_id=self.tokenizer.pad_token_id, trust_remote_code=True
+            model_name,
+            pad_token_id=self.tokenizer.pad_token_id,
+            trust_remote_code=True,
+            token=api_key,
         )
 
     def format_example(self, line, include_answer=True, cot=False):
