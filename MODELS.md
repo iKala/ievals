@@ -95,11 +95,11 @@ You can run `ieval supported` to check models which we have already included wit
 ## Qwen models or other local models
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --top_k 0
+CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --top_k 0 --api_key "<Your API Key>"
 ```
 
 or 
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat --top_k 0
+CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat --top_k 0 --api_key "<Your API Key>"
 ```

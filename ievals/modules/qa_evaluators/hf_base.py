@@ -14,19 +14,31 @@ from .evaluator import Evaluator
 
 
 class Qwen_Evaluator(Evaluator):
-    def __init__(self, choices, k, model_name, switch_zh_hans=False):
+    def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(Qwen_Evaluator, self).__init__(choices, model_name, k)
         self.converter = None
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
         self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name, pad_token="<|extra_0|>", eos_token="<|endoftext|>", padding_side="left", trust_remote_code=True
+            model_name,
+            pad_token="<|extra_0|>",
+            eos_token="<|endoftext|>",
+            padding_side="left",
+            trust_remote_code=True,
+            use_auth_token=api_key,
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            model_name, device_map="auto", pad_token_id=self.tokenizer.pad_token_id, trust_remote_code=True
+            model_name,
+            device_map="auto",
+            pad_token_id=self.tokenizer.pad_token_id,
+            trust_remote_code=True,
+            use_auth_token=api_key,
         ).eval()
         self.model.generation_config = GenerationConfig.from_pretrained(
-            model_name, pad_token_id=self.tokenizer.pad_token_id, trust_remote_code=True
+            model_name,
+            pad_token_id=self.tokenizer.pad_token_id,
+            trust_remote_code=True,
+            token=api_key,
         )
 
     def format_example(self, line, include_answer=True, cot=False):
@@ -55,7 +67,9 @@ class Qwen_Evaluator(Evaluator):
         if self.k == -1:
             k = dev_df.shape[0]
         for i in range(k):
-            tmp, history = self.format_example(dev_df.iloc[i, :], include_answer=True, cot=cot)
+            tmp, history = self.format_example(
+                dev_df.iloc[i, :], include_answer=True, cot=cot
+            )
 
             if i == 0:
                 tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
@@ -77,7 +91,15 @@ class Qwen_Evaluator(Evaluator):
         return log_probs, {"tokens": tokens}
 
     @torch.no_grad()
-    def eval_subject(self, subject_name, test_df, dev_df=None, few_shot=False, save_result_dir=None, cot=False):
+    def eval_subject(
+        self,
+        subject_name,
+        test_df,
+        dev_df=None,
+        few_shot=False,
+        save_result_dir=None,
+        cot=False,
+    ):
         correct_num = 0
         if save_result_dir:
             total_scores = []
@@ -86,7 +108,9 @@ class Qwen_Evaluator(Evaluator):
 
         history_prompt = None
         if few_shot:
-            few_shot_prompt, history_prompt = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
+            few_shot_prompt, history_prompt = self.generate_few_shot_prompt(
+                subject_name, dev_df, cot=cot
+            )
         else:
             few_shot_prompt = ""
 
@@ -104,7 +128,9 @@ class Qwen_Evaluator(Evaluator):
         )
 
         answers = list(test_df["answer"])
-        for row_index, row in tqdm(test_df.iterrows(), total=len(test_df), dynamic_ncols=True):
+        for row_index, row in tqdm(
+            test_df.iterrows(), total=len(test_df), dynamic_ncols=True
+        ):
             question, q_history = self.format_example(row, include_answer=False)
             text = ""
             answer_list = []
@@ -120,7 +146,9 @@ class Qwen_Evaluator(Evaluator):
             while input_info is None and timeout_counter <= 30:
                 try:
                     logits, input_info = self.get_logits([full_prompt])
-                    softval = logits.gather(1, choices_ids.expand(logits.size(0), -1)).softmax(1)
+                    softval = logits.gather(
+                        1, choices_ids.expand(logits.size(0), -1)
+                    ).softmax(1)
                     if softval.dtype in {torch.bfloat16, torch.float16}:
                         softval = softval.to(dtype=torch.float32)
                     probs = softval.detach().cpu().numpy()
@@ -147,5 +175,9 @@ class Qwen_Evaluator(Evaluator):
 
         if save_result_dir:
             test_df["correctness"] = total_scores
-            test_df.to_csv(os.path.join(save_result_dir, f"{subject_name}_val.csv"), encoding="utf-8", index=False)
+            test_df.to_csv(
+                os.path.join(save_result_dir, f"{subject_name}_val.csv"),
+                encoding="utf-8",
+                index=False,
+            )
         return correct_ratio
