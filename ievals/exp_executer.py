@@ -4,9 +4,17 @@ import pandas as pd
 from datasets import load_dataset
 
 def get_exp_setting(dataset):
-    if 'ikala' in dataset:
+    if 'ikala/tmmlu' in dataset.lower():
         from .settings import task_list, subject2name, subject2category
         return task_list, subject2name, subject2category
+    elif '/cmmlu' in dataset.lower():
+        from .cmmlu_settings import task_list, subject2name, subject2category
+        return task_list, subject2name, subject2category
+    elif '/c-eval' in dataset.lower():
+        from .ceval_settings import task_list, subject2name, subject2category
+        return task_list, subject2name, subject2category
+
+    raise ValueError('dataset not supported')
 
 def run_exp(evaluator, model_name, dataset, postfix_name='tgi', cache_path='.cache', split_name='test', few_shot=False):
     model_name_path = model_name.replace('/', '_')
@@ -27,7 +35,7 @@ def run_exp(evaluator, model_name, dataset, postfix_name='tgi', cache_path='.cac
         df.columns = ['model_name', 'subject', 'score']
         finished_subjects = df['subject'].tolist()
         task_list = [t for t in task_list if t not in finished_subjects]
-    
+
     output_filename = ''
     # TODO: absract out the dataset-task logic, as this is likely
     #       limited under multi subject task only

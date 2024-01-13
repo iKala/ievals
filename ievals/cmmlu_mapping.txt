@@ -1,0 +1,67 @@
+Agronomy (农学) Crop physiology, agroecology, soil science, breeding, ... Other 168
+Anatomy (解剖学) Gross anatomy, neuroanatomy, clinical anatomy, ... STEM 149
+Ancient Chinese (古汉语) Classical Chinese, poems, words, songs,... China specific 163
+Arts (艺术学) Drama, poetry, ink painting, literature, movie, ... Humanities 159
+Astronomy (天文学) Astronautics, planets, galaxies, asteroids, constellations, ... STEM 164
+Business Ethics (商业伦理) Fairness and justice, transparency and accountability, ... Social Science 208
+Chinese History (中国历史) Ancient history, modern history, ancient culture, ... China specific 322
+Chinese Literature (中国文学) Poetry, prose, drama, literary theory, ... China specific 203
+Chinese Civil Service Exam (中国公务员考试) Science, law, Confucian classics, logic, common sense, ... China specific 159
+Chinese Driving Rule (中国驾驶规则) Emergency procedures, signs, signals, traffic laws, ... China specific 130
+Chinese Food Culture (中国饮食文化) Regional cuisines, cultural significance, nutrition, ... China specific 135
+Chinese Foreign Policy (中国外交政策) China’s foreign policy’s principles, goals, history, ... China specific 106
+Chinese Teacher Qualification (中国教师资格) Educational theory, pedagogy, psychology, language, ... China specific 178
+Clinical Knowledge (临床知识) Anatomy, physiology, healthcare, diagnose, pathology, ... STEM 236
+College Actuarial Science (大学精算学) Factor reduction tables, density functions, ... STEM 105
+College Education (大学教育学) Modern education, ancient education, school education, ... Social Science 106
+College Engineering Hydrology (大学工程水文学) Air pressure, altitude, precipitation, ... STEM 105
+College Law (大学法律) Criminal patterns, patent law, marriage law, ... Humanities 107
+College Mathematics (大学数学) Matrices, derivatives, random variables, ... STEM 104
+College Medical Statistics (大学医学统计) Probability, statistical tests, linear regression STEM 106
+College Medicine (大学医学) Biochemistry, organic chemistry, genetics, metabolism, ... STEM 272
+Computer Science (计算机科学) Data structures, algorithms, programming, operating systems, ... STEM 203
+Computer Security (计算机安全) Network security, cryptography, firewalls, network protocols, ... STEM 170
+Conceptual Physics (概念物理学) Mechanics, waves, power, energy, light, electricity... STEM 146
+Construction Project Management (建设工程管理) Planning, contracts, safety, budgeting, management, ... China specific 138
+Economics (经济学) Microeconomics, macroeconomics, economic systems, policy, ... Social Science 158
+Education (教育学) Educational psychology, policies, technology, management ... Social Science 162
+Electrical Engineering (电气工程) Electromagnetics, Ohm’s Law, power Systems, ... STEM 171
+Elementary Chinese (小学语文) Ancient poems, classics, pronunciation, meaning, ... China specific 252
+Elementary Commonsense (小学常识) heatstroke, fire, diet, first aid, ... China specific 201
+Elementary Information and Technology (小学信息技术) windows, word, powerpoint, ... Other 239
+Elementary Mathematics (初等数学) Trigonometry, plane geometry, solid geometry, arithmetic, ... STEM 229
+Ethnology (民族学) Minority cultures, policies , religion, beliefs, history, ... China specific 134
+Food Science (食品科学) Chemistry, microbiology, processing, preservation, nutrition, ... Other 142
+Genetics (遗传学) Mendelian Genetics, chromosomes, DNA, genetic disorders, ... STEM 175
+Global Facts (全球事实) International economics, organizations, global events, ... Humanities 151
+High School Biology (高中生物) Cell biology, genetics, evolution, ecology, microbiology, ... STEM 168
+High School Chemistry (高中化学) Atomic, synthesis, chemical equilibrium, acid-base reactions, ... STEM 131
+High School Geography (高中地理) Physical geography, human geography, environmental geography, ... Social Science 117
+High School Mathematics (高中数学) Equations, trigonometry, analytic geometry, probability, ... STEM 163
+High School Physics (高中物理学) Mechanics, heat, optics, electricity, acoustics, nuclear physics, ... STEM 109
+High School Politics (高中政治) Marxist philosophy, political economy, scientific socialism, ... China specific 142
+Human Sexuality (人类性行为) Reproductive health, contraceptive methods, mental health, ... Other 125
+International Law (国际法学) Treaties, agreements, national sovereignty, law of the sea, ... Humanities 184
+Journalism (新闻学) Media effects theory, communication models, journalism law, ... Social Science 171
+Jurisprudence (法理学) Constitution, Administrative Law, Civil Law, Criminal Law, ... Humanities 410
+Legal And Moral Basis (法律与道德基础) Legal ethics, moral views and values, social ethics, history... Other 213
+Logical (逻辑学) Propositional logic, inductive reasoning, critical thinking, ... Humanities 122
+Machine Learning (机器学习) Supervised learning, unsupervised learning, neural networks, ... STEM 121
+Management (管理学) Organizational theory, leadership, international management, ... Social Science 209
+Marketing (市场营销) Marketing Concepts, Pricing Strategies, Consumer Behavior, ... Social Science 179
+Marxist Theory (马克思主义理论) Basic principles, Practical significance, contemporary value, ... Humanities 188
+Modern Chinese (现代汉语) Grammar, semantic, literature, ... China specific 115
+Nutrition (营养学) Dietary fiber, trace elements, fatty acids, ... STEM 144
+Philosophy (哲学) Chinese Philosophy, Western Philosophy, Book of Changes, ... Humanities 104
+Professional Accounting (专业会计) Audit, financing, assets, profit distribution, ... Social Science 174
+Professional Law (专业法学) Patent Law, Criminal Law, Contract Law, ... Humanities 210
+Professional Medicine (专业医学) Clinical Trials, Fractures, HIV, ... STEM 375
+Professional Psychology (专业心理学) emotions, thought patterns, perception, ... Social Science 231
+Public Relations (公共关系) Negotiations, Organizational Image, Etiquette, ... Social Science 173
+Security Study (安全研究) national security, terrorism, ... Social Science 134
+Sociology (社会学) Socialization, cities and community, ... Social Science 225
+Sports Science (体育学) swimming, Chinese martial arts, heart rate, ... Other 164
+Traditional Chinese Medicine (中医中药) human meridians, yin and yang, ... China specific 184
+Virology (病毒学) Pathogen, viral gene mutation, infection STEM 168
+World History (世界历史) Ancient civilizations, the Industrial Revolution, world wars, ... Humanities 160
+World Religions (世界宗教) Islam, Judaism, Buddhism, Christianity, ... Humanities 159
