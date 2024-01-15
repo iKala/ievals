@@ -5,10 +5,18 @@ from datasets import load_dataset
 
 
 def get_exp_setting(dataset):
-    if "ikala" in dataset:
+    if 'ikala/tmmlu' in dataset.lower():
         from .settings import task_list, subject2name, subject2category
 
         return task_list, subject2name, subject2category
+    elif '/cmmlu' in dataset.lower():
+        from .cmmlu_settings import task_list, subject2name, subject2category
+        return task_list, subject2name, subject2category
+    elif '/c-eval' in dataset.lower():
+        from .ceval_settings import task_list, subject2name, subject2category
+        return task_list, subject2name, subject2category
+
+    raise ValueError('dataset not supported')
 
 
 def run_exp(
