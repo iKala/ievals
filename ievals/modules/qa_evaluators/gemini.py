@@ -68,7 +68,7 @@ class Gemini_Evaluator(Evaluator):
         prompt = [
             {
                 "role": "system",
-                "content": f"你是一位專業的中文AI主力，以下是關於{subject}考試單選題，請選出正確的答案。",
+                "content": f"你是一位專業的中文AI助理，以下是關於{subject}考試單選題，請選出正確的答案。",
             }
         ]
         k = self.k
@@ -104,7 +104,7 @@ class Gemini_Evaluator(Evaluator):
             few_shot_prompt = [
                 {
                     "role": "system",
-                    "content": f"你是一位專業的中文AI主力，以下是關於{subject_name}考試單選題，請選出正確的答案。",
+                    "content": f"你是一位專業的中文AI助理，以下是關於{subject_name}考試單選題，請選出正確的答案。",
                 }
             ]
         answers = list(test_df["answer"])
