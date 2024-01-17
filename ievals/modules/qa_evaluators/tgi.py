@@ -42,7 +42,7 @@ class TGI_Evaluator(Evaluator):
         if include_answer:
             if cot:
                 ans = line["answer"]
-                content = "讓我們一步一步思考，\n" + line["explanation"] + f"\n所以答案是{ans}。"
+                content = "讓我們一步一步思考，\n" + line["explaination"] + f"\n所以答案是{ans}。"
                 return [
                     {"role": "user", "content": example},
                     {"role": "assistant", "content": content},
@@ -143,7 +143,7 @@ class TGI_Evaluator(Evaluator):
                             {
                                 "inputs": text,
                                 "parameters": {
-                                    "max_new_tokens": 90,
+                                    "max_new_tokens": 800,
                                     "temperature": 0.001,
                                     "stop": [self.messageEndToken],
                                 },
@@ -171,12 +171,13 @@ class TGI_Evaluator(Evaluator):
                 if len(ans_list) == 0:
                     ans_list = re.findall(r"答案為(.+?)。", response_str)
                 if len(ans_list) == 0:
-                    ans_list = re.findall(r"選項(.+?)是正確的。", response_str)
+                    ans_list = re.findall(r"選項(.+?)是正確的", response_str)
                 if len(ans_list) == 0:
                     ans_list = re.findall(r"答案为(.+?)。", response_str)
                 if len(ans_list) == 0:
-                    ans_list = re.findall(r"选项(.+?)是正确的。", response_str)
-
+                    ans_list = re.findall(r"选项(.+?)是正确的", response_str)
+                if len(ans_list) == 0:
+                    ans_list = re.findall(r"因此，选项(.+?)", response_str)
                 if len(ans_list) == 0:
                     correct = 0
                 else:

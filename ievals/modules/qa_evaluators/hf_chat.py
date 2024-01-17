@@ -35,7 +35,7 @@ class HF_Chat_Evaluator(Evaluator):
         history = []
         if include_answer:
             if cot:
-                history.append(line["explanation"])
+                history.append(line["explaination"])
                 example += "\n答案：" + line["answer"] + "\n\n"
             else:
                 example += "\n答案：" + line["answer"] + "\n\n"
@@ -110,18 +110,22 @@ class HF_Chat_Evaluator(Evaluator):
                 response_str = ""
             else:
                 response_str = response
-            if cot:
+            if cot: # simplified chinese
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
-                if self.converter:
+                if self.converter: # simplified chinese
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案为(.+?)。", response_str)
+                        ans_list = re.findall(r"答案为(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"选项(.+?)是正确的。", response_str)
+                        ans_list = re.findall(r"选项(.+?)是正确的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，选项(.+?)", response_str)
                 else:
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案為(.+?)。", response_str)
+                        ans_list = re.findall(r"答案為(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"選項(.+?)是正確的。", response_str)
+                        ans_list = re.findall(r"選項(.+?)是正確的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，選項(.+?)", response_str)
 
                 if len(ans_list) == 0:
                     correct = 0

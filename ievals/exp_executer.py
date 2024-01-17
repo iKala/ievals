@@ -27,6 +27,7 @@ def run_exp(
     cache_path=".cache",
     split_name="test",
     few_shot=False,
+    cot=False,
 ):
     model_name_path = model_name.replace("/", "_")
     save_result_dir = None
@@ -62,6 +63,7 @@ def run_exp(
             test_df,
             dev_df=dev_df,
             few_shot=few_shot,
+            cot=cot,
             save_result_dir=f"{cache_path}/{model_name_path}",
         )
 

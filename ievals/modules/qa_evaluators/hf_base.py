@@ -51,7 +51,7 @@ class Qwen_Evaluator(Evaluator):
 
         if include_answer:
             if cot:
-                history = line["explanation"]
+                history = line["explaination"]
                 example += "\n答案：" + line["answer"] + "\n\n"
             else:
                 example += "\n答案：" + line["answer"] + "\n\n"
