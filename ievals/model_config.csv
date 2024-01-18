@@ -48,7 +48,7 @@ TigerResearch/tigerbot-13b-chat-v3,,\n\n,### Response:\n,### Instruction:\n
 TigerResearch/tigerbot-13b-chat,,\n\n,### Response:\n,### Instruction:\n
 TigerResearch/tigerbot-7b-base,,\n\n,\n答案：,
 TigerResearch/tigerbot-7b-chat,,\n\n,### Response:\n,### Instruction:\n
-THUDM/chatglm3-6b,<|system|>,,<|assistant|>,<|user|>
+THUDM/chatglm3-6b,<|system|>, ,<|assistant|>,<|user|>
 THUDM/chatglm2-6b,,\n\n,答：,问：
 LinkSoul/Chinese-Llama-2-7b,,</s>,[/INST],[INST]
 hongyin/mistral-7b-80k,,\n,\n答案：,问题：

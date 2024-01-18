@@ -112,7 +112,7 @@ class ChatGPT_Evaluator(Evaluator):
                         model=self.model_name,
                         messages=full_prompt,
                         temperature=0.0,
-                        max_tokens=200,
+                        max_tokens=800,
                     )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
