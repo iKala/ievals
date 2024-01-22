@@ -42,7 +42,7 @@ class TGI_Evaluator(Evaluator):
         if include_answer:
             if cot:
                 ans = line["answer"]
-                content = "讓我們一步一步思考，\n" + line["explaination"] + f"\n所以答案是{ans}。"
+                content = "讓我們一步一步思考，\n" + line["explanation"] + f"\n所以答案是{ans}。"
                 return [
                     {"role": "user", "content": example},
                     {"role": "assistant", "content": content},

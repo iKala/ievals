@@ -34,7 +34,7 @@ class HF_Chat_Evaluator(Evaluator):
         example += "\n答案："
         if include_answer:
             if cot:
-                answer = "讓我們一步一步思考，\n" + line["explaination"] + "\n所以答案是" + line['answer']+"。\n\n"
+                answer = "讓我們一步一步思考，\n" + line["explanation"] + "\n所以答案是" + line['answer']+"。\n\n"
             else:
                 answer = "\n答案：" + line["answer"] + "\n\n"
             m = (example, answer)

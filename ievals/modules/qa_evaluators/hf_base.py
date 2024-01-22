@@ -57,7 +57,7 @@ class Qwen_Evaluator(Evaluator):
 
         if include_answer:
             if cot:
-                example += "讓我們一步一步思考，\n" + line["explaination"] + "\n所以答案是" + line['answer']+"。\n\n"
+                example += "讓我們一步一步思考，\n" + line["explanation"] + "\n所以答案是" + line['answer']+"。\n\n"
             else:
                 example += "\n答案：" + line["answer"] + "\n\n"
         else:

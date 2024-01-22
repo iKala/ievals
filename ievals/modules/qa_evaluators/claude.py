@@ -26,7 +26,7 @@ class Claude_Evaluator(Evaluator):
         if include_answer:
             if cot:
                 ans = line["answer"]
-                content = "讓我們一步一步思考，\n" + line["explaination"] + f"\n所以答案是{ans}。"
+                content = "讓我們一步一步思考，\n" + line["explanation"] + f"\n所以答案是{ans}。"
                 return [
                     {"role": "user", "content": example},
                     {"role": "assistant", "content": content},
@@ -117,7 +117,7 @@ class Claude_Evaluator(Evaluator):
                         stop_sequences=[anthropic.HUMAN_PROMPT],
                         model=self.model_name,
                         temperature=0.1,
-                        max_tokens_to_sample=300,
+                        max_tokens_to_sample=800,
                     )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
