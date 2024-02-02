@@ -117,7 +117,7 @@ class Claude_Evaluator(Evaluator):
                         stop_sequences=[anthropic.HUMAN_PROMPT],
                         model=self.model_name,
                         temperature=0.1,
-                        max_tokens_to_sample=800,
+                        max_tokens_to_sample=800 if cot else 200,
                     )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
@@ -197,6 +197,7 @@ class Claude_Evaluator(Evaluator):
             r"正確的答案應該是:.*?\b([A-D])\b",
             r"正確的選項應為:.*?\b([A-D])\b",
             r"所以答案為([A-D])",
+            r"答案: ([A-D]) ",
             r"答案為\s?([A-D])",
             r"所以下列方程式的解是([A-D])",
             r"选([A-D])",

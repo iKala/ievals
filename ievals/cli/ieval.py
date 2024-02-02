@@ -60,6 +60,8 @@ def get_evaluator(model_name, series=""):
             return Gemini_Evaluator
         elif series == "hf_chat":  # implement the chat function
             return HF_Chat_Evaluator
+        elif series == "hf_base":
+            return Qwen_Evaluator
         elif series == "tgi":  # implement the chat function
             return TGI_Evaluator
 

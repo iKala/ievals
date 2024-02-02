@@ -28,6 +28,7 @@ formatters = [
 
 [project.scripts]
 ieval = "ievals.cli.ieval:main"
+tmmluplus = "ievals.cli.tmmluplus:main"
 
 [tool.setuptools]
 packages = ["ievals"]

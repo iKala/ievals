@@ -143,7 +143,7 @@ class TGI_Evaluator(Evaluator):
                             {
                                 "inputs": text,
                                 "parameters": {
-                                    "max_new_tokens": 800,
+                                    "max_new_tokens": 800 if cot else 200,
                                     "temperature": 0.001,
                                     "stop": [self.messageEndToken],
                                 },
@@ -230,6 +230,7 @@ class TGI_Evaluator(Evaluator):
     def extract_ans(self, response_str):
         pattern = [
             r"([A-D]).",
+            r"答案: ([A-D]) ",
             r"答案：([A-D])",
             r"([A-D]). ",
             r"^選([A-D])",
