@@ -49,6 +49,7 @@ TigerResearch/tigerbot-13b-chat,,\n\n,### Response:\n,### Instruction:\n
 TigerResearch/tigerbot-7b-base,,\n\n,\n答案：,
 TigerResearch/tigerbot-7b-chat,,\n\n,### Response:\n,### Instruction:\n
 internlm/internlm-7b,,\n\n,\n答案：,
+internlm/internlm-chat-7b,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
 internlm/internlm2-chat-7b,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
 THUDM/chatglm3-6b,<|system|>, ,<|assistant|>,<|user|>
 THUDM/chatglm2-6b,,\n\n,答：,问：
