@@ -60,6 +60,8 @@ def get_evaluator(model_name, series=""):
             return Gemini_Evaluator
         elif series == "hf_chat":  # implement the chat function
             return HF_Chat_Evaluator
+        elif series == "hf_base":
+            return Qwen_Evaluator
         elif series == "tgi":  # implement the chat function
             return TGI_Evaluator
 
@@ -93,6 +95,7 @@ def get_parser():
     parser.add_argument("--api_key", type=str, default=None)
     parser.add_argument("--max_samples", type=int, default=None)
     parser.add_argument("--cache", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--cot", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument(
         "--switch_zh_hans", action=argparse.BooleanOptionalAction, default=False
     )
@@ -167,17 +170,22 @@ def main():
     postfix = model_name.split("/")[-1]
     if args.top_k > 0:
         postfix += f"_top_{args.top_k}"
+    if args.cot:
+        postfix += '_cot'
 
     cache_path = None
     if args.cache:
         cache_path = ".cache"
         if args.top_k > 0:
             cache_path += f"_top_{args.top_k}"
+        if args.cot:
+            cache_path += "_cot"
 
     run_exp(
         eval_ins,
         model_name,
         args.dataset,
+        cot=args.cot,
         few_shot=args.top_k > 0,
         cache_path=".cache",
         postfix_name=postfix,

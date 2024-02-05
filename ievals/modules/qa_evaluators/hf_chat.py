@@ -32,35 +32,30 @@ class HF_Chat_Evaluator(Evaluator):
             example += f'{choice}. {line[f"{choice}"]}\n'
 
         example += "\n答案："
-        history = []
         if include_answer:
             if cot:
-                history.append(line["explanation"])
-                example += "\n答案：" + line["answer"] + "\n\n"
+                answer = "讓我們一步一步思考，\n" + line["explanation"] + "\n所以答案是" + line['answer']+"。\n\n"
             else:
-                example += "\n答案：" + line["answer"] + "\n\n"
-        else:
-            example += "\n答案："
-        if len(history) == 0:
-            history = None
-        return example, history
+                answer = "\n答案：" + line["answer"] + "\n\n"
+            m = (example, answer)
+            return m
+        return example
 
     def generate_few_shot_prompt(self, subject, dev_df, cot=False):
-        prompt = ""
-        history_prompt = []
+        messages = []
         k = self.k
         if self.k == -1:
             k = dev_df.shape[0]
         for i in range(k):
-            tmp, history = self.format_example(dev_df.iloc[i, :], cot=cot)
+            tmp = self.format_example(dev_df.iloc[i, :], cot=cot)
             if i == 0:
-                tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
-            prompt += tmp
-            if cot and len(history) > 0:
-                history_prompt.extend(history)
-        if not cot:
-            history_prompt = None
-        return prompt, history_prompt
+                if isinstance(tmp, tuple):
+                    tmp = (f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp[0], tmp[1])
+                else: # should be string
+                    tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
+            messages.append(tmp)
+
+        return messages
 
     def eval_subject(
         self,
@@ -78,26 +73,26 @@ class HF_Chat_Evaluator(Evaluator):
 
         q_history = None
         if few_shot:
-            few_shot_prompt, _ = self.generate_few_shot_prompt(
+            history = self.generate_few_shot_prompt(
                 subject_name, dev_df, cot=cot
             )
         else:
-            few_shot_prompt = ""
+            history = []
         answers = list(test_df["answer"])
         for row_index, row in tqdm(test_df.iterrows(), total=len(test_df)):
-            question, q_history = self.format_example(row, include_answer=False)
-            full_prompt = few_shot_prompt + question
+            question = self.format_example(row, include_answer=False, cot=cot)
             response = None
             timeout_counter = 0
             text = ""
 
             if self.converter:
-                full_prompt = self.converter.convert(full_prompt)
-
+                question = self.converter.convert(question)
+                history = [ self.converter.convert(hist) for hist in history ]
+            # better to check for history accuracy
             while response is None and timeout_counter <= 30:
                 try:
                     response, _ = self.model.chat(
-                        self.tokenizer, full_prompt, history=q_history
+                        self.tokenizer, question, history=history
                     )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
@@ -110,18 +105,22 @@ class HF_Chat_Evaluator(Evaluator):
                 response_str = ""
             else:
                 response_str = response
-            if cot:
+            if cot: # simplified chinese
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
-                if self.converter:
+                if self.converter: # simplified chinese
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案为(.+?)。", response_str)
+                        ans_list = re.findall(r"答案为(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"选项(.+?)是正确的。", response_str)
+                        ans_list = re.findall(r"选项(.+?)是正确的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，选项(.+?)", response_str)
                 else:
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案為(.+?)。", response_str)
+                        ans_list = re.findall(r"答案為(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"選項(.+?)是正確的。", response_str)
+                        ans_list = re.findall(r"選項(.+?)是正確的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，選項(.+?)", response_str)
 
                 if len(ans_list) == 0:
                     correct = 0

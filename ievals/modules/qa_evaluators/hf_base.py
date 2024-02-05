@@ -1,3 +1,10 @@
+"""
+    Note due to the nature of logits based inference (select the token for A, B, C, D)
+    
+    CoT in theory shouln't work because the response should not start to inference A-D tokens
+    but the thought process. 
+    If you want to use chain of thought, please use the hf_chat.py process    
+"""
 import os
 import re
 import logging
@@ -47,37 +54,33 @@ class Qwen_Evaluator(Evaluator):
             example += f'\n{choice}. {line[f"{choice}"]}'
 
         example += "\n答案："
-        history = None
 
         if include_answer:
             if cot:
-                history = line["explanation"]
-                example += "\n答案：" + line["answer"] + "\n\n"
+                example += "讓我們一步一步思考，\n" + line["explanation"] + "\n所以答案是" + line['answer']+"。\n\n"
             else:
                 example += "\n答案：" + line["answer"] + "\n\n"
         else:
-            example += "\n答案："
-
-        return example, history
+            if cot:
+                example += "\n答案：讓我們一步一步思考，\n"
+            else:
+                example += '\n答案：'
+        return example
 
     def generate_few_shot_prompt(self, subject, dev_df, cot=False):
         prompt = ""
-        history_prompt = ""
         k = self.k
         if self.k == -1:
             k = dev_df.shape[0]
         for i in range(k):
-            tmp, history = self.format_example(
+            tmp = self.format_example(
                 dev_df.iloc[i, :], include_answer=True, cot=cot
             )
 
             if i == 0:
                 tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
-            if history is None:
-                history = ""
             prompt += tmp
-            history_prompt += history
-        return prompt, history_prompt
+        return prompt
 
     def get_logits(self, inputs):
         input_ids = self.tokenizer(inputs, padding="longest")["input_ids"]
@@ -106,9 +109,8 @@ class Qwen_Evaluator(Evaluator):
         result = []
         score = []
 
-        history_prompt = None
         if few_shot:
-            few_shot_prompt, history_prompt = self.generate_few_shot_prompt(
+            few_shot_prompt = self.generate_few_shot_prompt(
                 subject_name, dev_df, cot=cot
             )
         else:
@@ -131,7 +133,7 @@ class Qwen_Evaluator(Evaluator):
         for row_index, row in tqdm(
             test_df.iterrows(), total=len(test_df), dynamic_ncols=True
         ):
-            question, q_history = self.format_example(row, include_answer=False)
+            question = self.format_example(row, include_answer=False, cot=cot)
             text = ""
             answer_list = []
             full_prompt = few_shot_prompt + question

@@ -117,7 +117,7 @@ class Claude_Evaluator(Evaluator):
                         stop_sequences=[anthropic.HUMAN_PROMPT],
                         model=self.model_name,
                         temperature=0.1,
-                        max_tokens_to_sample=300,
+                        max_tokens_to_sample=800 if cot else 200,
                     )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
@@ -133,16 +133,20 @@ class Claude_Evaluator(Evaluator):
             if cot:
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
 
-                if self.converter:
+                if self.converter: # simplified chinese
                     if len(ans_list) == 0:
                         ans_list = re.findall(r"答案为(.+?)。", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"选项(.+?)是正确的。", response_str)
+                        ans_list = re.findall(r"答案是(.+?)", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"选项(.+?)是正确的", response_str)
                 else:
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案為(.+?)。", response_str)
+                        ans_list = re.findall(r"答案為(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"選項(.+?)是正確的。", response_str)
+                        ans_list = re.findall(r"答案是(.+?)", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"選項(.+?)是正確的", response_str)
 
                 if len(ans_list) == 0:
                     correct = 0
@@ -193,6 +197,7 @@ class Claude_Evaluator(Evaluator):
             r"正確的答案應該是:.*?\b([A-D])\b",
             r"正確的選項應為:.*?\b([A-D])\b",
             r"所以答案為([A-D])",
+            r"答案: ([A-D]) ",
             r"答案為\s?([A-D])",
             r"所以下列方程式的解是([A-D])",
             r"选([A-D])",

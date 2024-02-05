@@ -112,7 +112,7 @@ class ChatGPT_Evaluator(Evaluator):
                         model=self.model_name,
                         messages=full_prompt,
                         temperature=0.0,
-                        max_tokens=200,
+                        max_tokens=800,
                     )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
@@ -126,16 +126,20 @@ class ChatGPT_Evaluator(Evaluator):
                 response_str = response.choices[0].message.content
             if cot:
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
-                if self.converter:
+                if self.converter: # simplified chinese
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案为(.+?)。", response_str)
+                        ans_list = re.findall(r"答案为(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"选项(.+?)是正确的。", response_str)
+                        ans_list = re.findall(r"选项(.+?)是正确的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，选项(.+?)", response_str)
                 else:
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案為(.+?)。", response_str)
+                        ans_list = re.findall(r"答案為(.+?)", response_str)
                     if len(ans_list) == 0:
-                        ans_list = re.findall(r"選項(.+?)是正確的。", response_str)
+                        ans_list = re.findall(r"選項(.+?)是正確的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，選項(.+?)", response_str)
 
                 if len(ans_list) == 0:
                     correct = 0

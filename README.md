@@ -39,3 +39,10 @@ For more details please refer to [models](MODELS.md) section
   year={2023}
 }
 ```
+
+## Disclaimer
+
+This is not an officially supported iKala product.
+
+This research code is provided "as-is" to the broader research community.
+iKala does not promise to maintain or otherwise support this code in any way.
