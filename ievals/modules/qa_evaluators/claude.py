@@ -12,7 +12,7 @@ class Claude_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(Claude_Evaluator, self).__init__(choices, model_name, k)
         self.client = anthropic.Anthropic(api_key=api_key)
-        self.model_name
+        self.model_name = model_name
         self.converter = None
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
