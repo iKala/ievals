@@ -42,7 +42,8 @@ def get_model_config():
 def get_tgi_prompt_config(model_name):
     valid_model_names, df = get_model_config()
     if model_name not in valid_model_names:
-        return None, None
+        raise ValueError("Not supported yet. Please enter user token.")
+
     prompt_config = df[df["model_name"] == model_name].iloc[0]
     prompt_config.pop("model_name")
     return prompt_config
