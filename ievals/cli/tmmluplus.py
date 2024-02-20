@@ -7,7 +7,7 @@ import numpy as np
 from ievals.settings import categories, subject2category
 def get_parser():
     parser = argparse.ArgumentParser(description="Run TMMLU+ score aggregate")
-    parser.add_argument("result_file", type=str, help="Name of the eval model")
+    parser.add_argument("--result_file", type=str, help="Name of the eval model")
 
     return parser
 
@@ -58,3 +58,6 @@ def main():
     for score in model_scores:
         print(score)
     return model_scores
+
+if __name__ == "__main__":
+    main()

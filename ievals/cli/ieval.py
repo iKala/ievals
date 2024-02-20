@@ -188,7 +188,7 @@ def main():
         args.dataset,
         cot=args.cot,
         few_shot=args.top_k > 0,
-        cache_path=".cache",
+        cache_path=cache_path,
         postfix_name=postfix,
     )
 
