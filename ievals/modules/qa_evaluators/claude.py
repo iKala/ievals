@@ -164,7 +164,12 @@ class Claude_Evaluator(Evaluator):
                             correct_num += 1
                             correct = 1
                         else:
-                            correct = 0
+                            ans_list = self.extract_ans(response_str)
+                            if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
+                                correct_num += 1
+                                correct = 1
+                            else:
+                                correct = 0
                     else:
                         correct = 0
                 else:
