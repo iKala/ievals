@@ -7,6 +7,41 @@ Open weights models :
 2. For Qwen models or other local models, please visit [**Qwen models or other local models**](#qwen-models-or-other-local-models) section.
 
 
+## Text generation inference
+
+In order to reduce download friction, we recommend using [text-generation-inference](https://github.com/huggingface/text-generation-inference) for inferencing open-weight models
+
+For example this would setup a simple tgi instance using docker
+
+```bash
+sudo docker run --gpus '"device=0"' \
+    --shm-size 1g -p 8020:80 \
+    -v /volume/saved_model/:/data ghcr.io/huggingface/text-generation-inference:1.1.0 \
+    --max-input-length 4000 \
+    --max-total-tokens 4096 \
+    --model-id  GeneZC/MiniChat-3B
+```
+Note: For 5 shot settings, one might need to supply more than 5200 max-input-length to fit in the entire prompt
+
+Once the server has warmed up, simply assign the models and IP:Port to the evaluation cli
+
+```bash
+ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020
+```
+
+For custom models, you might need to provide tokens text for system, user, assistant and end of sentence.
+
+```bash
+ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020 \
+    --sys_token "<s> [|User|] " \
+    --usr_token "<s> [|User|] " \
+    --ast_token "[|Assistant|]" \
+    --eos_token "</s>"
+```
+
+You can run `ieval supported` to check models which we have already included with chat prompt. (This feature will be deprecated once more models support format chat prompt function)
+
+
 ## OpenAI
 
 ```bash
@@ -57,40 +92,6 @@ ieval <Your model name> --api_key "<Dash Scope API>"
 ```
 
 Supported models : qwen-turbo, qwen-plus, qwen-max, qwen-plus-v1, bailian-v1
-
-## Text generation inference
-
-In order to reduce download friction, we recommend using [text-generation-inference](https://github.com/huggingface/text-generation-inference) for inferencing open-weight models
-
-For example this would setup a simple tgi instance using docker
-
-```bash
-sudo docker run --gpus '"device=0"' \
-    --shm-size 1g -p 8020:80 \
-    -v /volume/saved_model/:/data ghcr.io/huggingface/text-generation-inference:1.1.0 \
-    --max-input-length 4000 \
-    --max-total-tokens 4096 \
-    --model-id  GeneZC/MiniChat-3B
-```
-Note: For 5 shot settings, one might need to supply more than 5200 max-input-length to fit in the entire prompt
-
-Once the server has warmed up, simply assign the models and IP:Port to the evaluation cli
-
-```bash
-ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020
-```
-
-For custom models, you might need to provide tokens text for system, user, assistant and end of sentence.
-
-```bash
-ieval GeneZC/MiniChat-3B --ip_addr 0.0.0.0:8020 \
-    --sys_token "<s> [|User|] " \
-    --usr_token "<s> [|User|] " \
-    --ast_token "[|Assistant|]" \
-    --eos_token "</s>"
-```
-
-You can run `ieval supported` to check models which we have already included with chat prompt. (This feature will be deprecated once more models support format chat prompt function)
 
 ## Qwen models or other local models
 
