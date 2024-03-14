@@ -57,14 +57,20 @@ class Qwen_Evaluator(Evaluator):
 
         if include_answer:
             if cot:
-                example += "讓我們一步一步思考，\n" + line["explanation"] + "\n所以答案是" + line['answer']+"。\n\n"
+                example += (
+                    "讓我們一步一步思考，\n"
+                    + line["explanation"]
+                    + "\n所以答案是"
+                    + line["answer"]
+                    + "。\n\n"
+                )
             else:
                 example += "\n答案：" + line["answer"] + "\n\n"
         else:
             if cot:
                 example += "\n答案：讓我們一步一步思考，\n"
             else:
-                example += '\n答案：'
+                example += "\n答案："
         return example
 
     def generate_few_shot_prompt(self, subject, dev_df, cot=False):
@@ -73,9 +79,7 @@ class Qwen_Evaluator(Evaluator):
         if self.k == -1:
             k = dev_df.shape[0]
         for i in range(k):
-            tmp = self.format_example(
-                dev_df.iloc[i, :], include_answer=True, cot=cot
-            )
+            tmp = self.format_example(dev_df.iloc[i, :], include_answer=True, cot=cot)
 
             if i == 0:
                 tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp

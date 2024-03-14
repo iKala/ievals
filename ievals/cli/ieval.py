@@ -67,7 +67,6 @@ def get_evaluator(model_name, series=""):
             return TGI_Evaluator
 
     l_model_name = model_name.lower()
-
     if "gemini" in model_name:
         return Gemini_Evaluator
     if "gpt-" in model_name:
@@ -83,6 +82,7 @@ def get_evaluator(model_name, series=""):
             return Qwen_Evaluator
     elif "qwen" in model_name:
         return DashScope_Evaluator
+
     return TGI_Evaluator
 
 

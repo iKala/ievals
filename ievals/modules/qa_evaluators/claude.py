@@ -17,6 +17,14 @@ class Claude_Evaluator(Evaluator):
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
 
+        self.change_to_new_model = None
+        if (
+            "opus" in self.model_name
+            or "sonnet" in self.model_name
+            or "haiku" in self.model_name
+        ):
+            self.change_to_new_model = True
+
     def format_example(self, line, include_answer=True, cot=False):
         example = line["question"]
         for choice in self.choices:
@@ -112,13 +120,25 @@ class Claude_Evaluator(Evaluator):
 
             while response is None and timeout_counter <= 30:
                 try:
-                    response = self.client.completions.create(
-                        prompt=text,
-                        stop_sequences=[anthropic.HUMAN_PROMPT],
-                        model=self.model_name,
-                        temperature=0.1,
-                        max_tokens_to_sample=800 if cot else 200,
-                    )
+                    if self.change_to_new_model:
+                        response = self.client.messages.create(
+                            messages=[
+                                {
+                                    "role": "user",
+                                    "content": text,
+                                }
+                            ],
+                            model=self.model_name,
+                            max_tokens=800 if cot else 200,
+                        )
+                    else:
+                        response = self.client.completions.create(
+                            prompt=text,
+                            stop_sequences=[anthropic.HUMAN_PROMPT],
+                            model=self.model_name,
+                            temperature=0.1,
+                            max_tokens_to_sample=800 if cot else 200,
+                        )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
@@ -127,13 +147,15 @@ class Claude_Evaluator(Evaluator):
                     continue
             if response == None:
                 response_str = ""
+            elif self.change_to_new_model:
+                response_str = response.content[0].text
             else:
                 response_str = response.completion
 
             if cot:
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
 
-                if self.converter: # simplified chinese
+                if self.converter:  # simplified chinese
                     if len(ans_list) == 0:
                         ans_list = re.findall(r"答案为(.+?)。", response_str)
                     if len(ans_list) == 0:

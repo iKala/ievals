@@ -20,6 +20,7 @@ hfl/chinese-llama-2-lora-13b-16k,,\n\n,### Response:\n,### Instruction:\n
 microsoft/Orca-2-13b,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
 01-ai/Yi-34B,,\n\n,\n答案：,
 01-ai/Yi-6B,,\n\n,\n答案：,
+01-ai/Yi-9B,,\n\n,\n答案：,
 ikala/yi-pruned-4B,,\n\n,\n答案：,
 01-ai/Yi-34B-Chat,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n
 01-ai/Yi-6B-Chat,<|im_start|>system\n,<|im_end|>,<|im_start|>assistant\n,<|im_start|>user\n

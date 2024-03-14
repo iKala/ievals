@@ -133,7 +133,7 @@ class GPT_Evaluator(Evaluator):
 
             if cot:
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
-                if self.converter: # simplified chinese
+                if self.converter:  # simplified chinese
                     if len(ans_list) == 0:
                         ans_list = re.findall(r"答案为(.+?)", response_str)
                     if len(ans_list) == 0:

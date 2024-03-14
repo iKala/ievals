@@ -34,7 +34,13 @@ class HF_Chat_Evaluator(Evaluator):
         example += "\n答案："
         if include_answer:
             if cot:
-                answer = "讓我們一步一步思考，\n" + line["explanation"] + "\n所以答案是" + line['answer']+"。\n\n"
+                answer = (
+                    "讓我們一步一步思考，\n"
+                    + line["explanation"]
+                    + "\n所以答案是"
+                    + line["answer"]
+                    + "。\n\n"
+                )
             else:
                 answer = "\n答案：" + line["answer"] + "\n\n"
             m = (example, answer)
@@ -51,7 +57,7 @@ class HF_Chat_Evaluator(Evaluator):
             if i == 0:
                 if isinstance(tmp, tuple):
                     tmp = (f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp[0], tmp[1])
-                else: # should be string
+                else:  # should be string
                     tmp = f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp
             messages.append(tmp)
 
@@ -73,9 +79,7 @@ class HF_Chat_Evaluator(Evaluator):
 
         q_history = None
         if few_shot:
-            history = self.generate_few_shot_prompt(
-                subject_name, dev_df, cot=cot
-            )
+            history = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
         else:
             history = []
         answers = list(test_df["answer"])
@@ -87,7 +91,7 @@ class HF_Chat_Evaluator(Evaluator):
 
             if self.converter:
                 question = self.converter.convert(question)
-                history = [ self.converter.convert(hist) for hist in history ]
+                history = [self.converter.convert(hist) for hist in history]
             # better to check for history accuracy
             while response is None and timeout_counter <= 30:
                 try:
@@ -105,9 +109,9 @@ class HF_Chat_Evaluator(Evaluator):
                 response_str = ""
             else:
                 response_str = response
-            if cot: # simplified chinese
+            if cot:  # simplified chinese
                 ans_list = re.findall(r"答案是(.+?)。", response_str)
-                if self.converter: # simplified chinese
+                if self.converter:  # simplified chinese
                     if len(ans_list) == 0:
                         ans_list = re.findall(r"答案为(.+?)", response_str)
                     if len(ans_list) == 0:
