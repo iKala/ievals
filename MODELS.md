@@ -62,7 +62,7 @@ ieval gemini-pro  --api_key "<Your API Key from https://ai.google.dev/>" --top_k
 
 Currently we do not support models from vertex AI yet. So PaLM (bison) series are not supported
 
-## Anthropic (instant, v1.3, v2.0)
+## Anthropic (instant, v1.3, v2.0, v3.0 Haiku, v3.0 Opus, v3.0 Sonnet)
 
 ```bash
 ieval claude-instant-1  --api_key "<Anthropic API keys>"
