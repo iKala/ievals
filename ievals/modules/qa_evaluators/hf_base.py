@@ -179,8 +179,6 @@ class Qwen_Evaluator(Evaluator):
         correct_ratio = 100 * sum(score) / len(score)
 
         if save_result_dir:
-            print(len(result), len(score))
-            print(result[:5], score[:5])
             test_df["model_output"] = result
             test_df["correctness"] = score
             test_df.to_csv(
