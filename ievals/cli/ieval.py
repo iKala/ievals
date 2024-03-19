@@ -18,6 +18,7 @@ from ievals.modules.qa_evaluators.claude import Claude_Evaluator
 from ievals.modules.qa_evaluators.azure import Azure_Evaluator
 from ievals.modules.qa_evaluators.oai_complete import GPT_Evaluator
 from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
+from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
 
 try:
     from ievals.modules.qa_evaluators.hf_chat import HF_Chat_Evaluator
@@ -82,6 +83,8 @@ def get_evaluator(model_name, series=""):
             return Qwen_Evaluator
     elif "qwen" in model_name:
         return DashScope_Evaluator
+    elif "mixtral" in model_name:
+        return Mixtral_Evaluator
 
     return TGI_Evaluator
 
@@ -160,6 +163,13 @@ def main():
             model_name=model_name,
             switch_zh_hans=args.switch_zh_hans,
         )
+    elif "mixtral" in str(eval_cls):
+        eval_ins = eval_cls(
+            choices=valid_choices,
+            k=args.top_k,
+            model_name=model_name,
+            switch_zh_hans=args.switch_zh_hans,
+        )
     else:
         eval_ins = eval_cls(
             choices=valid_choices,
@@ -172,7 +182,7 @@ def main():
     if args.top_k > 0:
         postfix += f"_top_{args.top_k}"
     if args.cot:
-        postfix += '_cot'
+        postfix += "_cot"
 
     cache_path = None
     if args.cache:

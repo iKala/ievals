@@ -110,8 +110,8 @@ class Qwen_Evaluator(Evaluator):
         correct_num = 0
         if save_result_dir:
             total_scores = []
-        result = []
-        score = []
+            result = []
+            score = []
 
         if few_shot:
             few_shot_prompt = self.generate_few_shot_prompt(
@@ -172,15 +172,17 @@ class Qwen_Evaluator(Evaluator):
 
                     if answer_list != []:
                         correct = 1 if pred == answer_list[i] else 0
-                        score.append(correct)
-                    result.append(pred)
 
             if save_result_dir:
-                total_scores.append(sum(score))
+                result.append(pred)
+                score.append(correct)
         correct_ratio = 100 * sum(score) / len(score)
 
         if save_result_dir:
-            test_df["correctness"] = total_scores
+            print(len(result), len(score))
+            print(result[:5], score[:5])
+            test_df["model_output"] = result
+            test_df["correctness"] = score
             test_df.to_csv(
                 os.path.join(save_result_dir, f"{subject_name}_val.csv"),
                 encoding="utf-8",
