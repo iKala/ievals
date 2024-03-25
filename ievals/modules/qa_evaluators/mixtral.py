@@ -124,7 +124,7 @@ class Mixtral_Evaluator(Evaluator):
                 eos_token_id=self.tokenizer.eos_token_id,
                 pad_token_id=self.tokenizer.eos_token_id,
                 generation_config=self.generation_config,
-                max_length=4096,
+                max_length=6400,
             )
 
             _, length = inputs.input_ids.shape

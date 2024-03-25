@@ -192,6 +192,9 @@ def main():
         if args.cot:
             cache_path += "_cot"
 
+    if args.switch_zh_hans:
+        cache_path += "_zhs"
+
     run_exp(
         eval_ins,
         model_name,
@@ -200,6 +203,7 @@ def main():
         few_shot=args.top_k > 0,
         cache_path=cache_path,
         postfix_name=postfix,
+        switch_zh_hans=args.switch_zh_hans,
     )
 
 

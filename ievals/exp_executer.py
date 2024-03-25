@@ -30,6 +30,7 @@ def run_exp(
     split_name="test",
     few_shot=False,
     cot=False,
+    switch_zh_hans=False,
 ):
     model_name_path = model_name.replace("/", "_")
     save_result_dir = None
@@ -43,13 +44,14 @@ def run_exp(
     postfix = model_name.split("/")[-1]
     prefix_name = dataset.split("/")[-1]
     result_cache = f"{prefix_name}_{postfix_name}.tsv"
+    if switch_zh_hans:
+        result_cache = f"{prefix_name}_{postfix_name}_zhs.tsv"
     if os.path.exists(result_cache):
         logging.info(f"Found previous cache {result_cache}, skipping executed subjects")
         df = pd.read_csv(result_cache, delimiter="\t", header=None)
         df.columns = ["model_name", "subject", "score"]
         finished_subjects = df["subject"].tolist()
         task_list = [t for t in task_list if t not in finished_subjects]
-
     output_filename = ""
     # TODO: absract out the dataset-task logic, as this is likely
     #       limited under multi subject task only

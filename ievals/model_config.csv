@@ -27,7 +27,8 @@ ikala/yi-pruned-4B,,\n\n,\n答案：,
 yentinglin/Taiwan-LLM-13B-v2.0-chat,,</s>, ASSISTANT: , USER: 
 yentinglin/Taiwan-LLM-13B-v2.0-base,,\n\n,\n答案：,
 yentinglin/Taiwan-LLM-7B-v2.0-base,,\n\n,\n答案：,
-MediaTek-Research/Breeze-7B-Instruct-v0.1,<s>, ,[/INST] ,[INST] 
+MediaTek-Research/Breeze-7B-Instruct-v0_1,<s>, ,[/INST] ,[INST] 
+MediaTek-Research/Breeze-7B-Instruct-v1_0,<s>, ,[/INST] ,[INST] 
 deepseek-ai/deepseek-llm-67b-base,,\n\n,\n答案：,
 deepseek-ai/deepseek-llm-67b-chat,,<｜end▁of▁sentence｜>, ASSISTANT: , USER: 
 deepseek-ai/deepseek-llm-7b-base,,\n,\n答案：,
