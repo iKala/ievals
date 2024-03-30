@@ -170,7 +170,7 @@ class Mixtral_Evaluator(Evaluator):
         if save_result_dir:
             test_df["model_output"] = result
             test_df["correctness"] = score
-            test_df.to_csv(os.path.join(save_result_dir, f"{subject_name}_test.csv"))
+            test_df.to_csv(os.path.join(save_result_dir, f"{subject_name}_val.csv"))
 
         return correct_ratio
 
