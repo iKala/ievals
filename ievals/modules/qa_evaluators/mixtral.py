@@ -3,12 +3,13 @@
 import os
 import re
 from tqdm import tqdm
-import random
+import opencc
 import numpy as np
 import torch
 from transformers import AutoModelForCausalLM, LlamaTokenizer, BitsAndBytesConfig
 from transformers import GenerationConfig
 from .evaluator import Evaluator
+from ..answer_parser import match_response_choices, cot_match_response_choice
 
 
 class Mixtral_Evaluator(Evaluator):

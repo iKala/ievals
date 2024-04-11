@@ -11,15 +11,16 @@ import os
 import logging
 import argparse
 import pandas as pd
-from datasets import load_dataset
 from ievals.modules.qa_evaluators.tgi import TGI_Evaluator
 from ievals.modules.qa_evaluators.gemini import Gemini_Evaluator
 from ievals.modules.qa_evaluators.claude import Claude_Evaluator
 from ievals.modules.qa_evaluators.azure import Azure_Evaluator
 from ievals.modules.qa_evaluators.oai_complete import GPT_Evaluator
 from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
-from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
-
+try:
+    from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
+except ImportError as e:
+    logging.error("huggingface and qwen models are not supported due to " + str(e))
 try:
     from ievals.modules.qa_evaluators.hf_chat import HF_Chat_Evaluator
     from ievals.modules.qa_evaluators.hf_base import (

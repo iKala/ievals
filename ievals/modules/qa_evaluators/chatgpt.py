@@ -6,6 +6,7 @@ import openai
 import opencc
 from tqdm import tqdm
 from .evaluator import Evaluator
+from ..answer_parser import match_response_choices, cot_match_response_choice
 
 
 class ChatGPT_Evaluator(Evaluator):
@@ -14,6 +15,7 @@ class ChatGPT_Evaluator(Evaluator):
         openai.api_key = api_key
         self.client = openai.OpenAI(api_key=api_key)
         self.converter = None
+        self.switch_zh_hans = switch_zh_hans
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
 
@@ -125,21 +127,8 @@ class ChatGPT_Evaluator(Evaluator):
             else:
                 response_str = response.choices[0].message.content
             if cot:
-                ans_list = re.findall(r"答案是(.+?)。", response_str)
-                if self.converter:  # simplified chinese
-                    if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案为(.+?)", response_str)
-                    if len(ans_list) == 0:
-                        ans_list = re.findall(r"选项(.+?)是正确的", response_str)
-                    if len(ans_list) == 0:
-                        ans_list = re.findall(r"因此，选项(.+?)", response_str)
-                else:
-                    if len(ans_list) == 0:
-                        ans_list = re.findall(r"答案為(.+?)", response_str)
-                    if len(ans_list) == 0:
-                        ans_list = re.findall(r"選項(.+?)是正確的", response_str)
-                    if len(ans_list) == 0:
-                        ans_list = re.findall(r"因此，選項(.+?)", response_str)
+                ans_list = cot_match_response_choice(response_str,
+                            is_simplified= self.switch_zh_hans)
 
                 if len(ans_list) == 0:
                     correct = 0
