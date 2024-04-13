@@ -131,7 +131,7 @@ class Claude_Evaluator(Evaluator):
                                 }
                             ],
                             model=self.model_name,
-                            max_tokens=800 if cot else 200,
+                            max_tokens=1200 if cot else 400,
                         )
                     else:
                         response = self.client.completions.create(
@@ -139,7 +139,7 @@ class Claude_Evaluator(Evaluator):
                             stop_sequences=[anthropic.HUMAN_PROMPT],
                             model=self.model_name,
                             temperature=0.1,
-                            max_tokens_to_sample=800 if cot else 200,
+                            max_tokens_to_sample=1200 if cot else 400,
                         )
                 except Exception as msg:
                     if "timeout=600" in str(msg):

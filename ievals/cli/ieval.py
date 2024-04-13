@@ -17,6 +17,7 @@ from ievals.modules.qa_evaluators.claude import Claude_Evaluator
 from ievals.modules.qa_evaluators.azure import Azure_Evaluator
 from ievals.modules.qa_evaluators.oai_complete import GPT_Evaluator
 from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
+from ievals.modules.qa_evaluators.reka_api import Reka_Evaluator
 try:
     from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
 except ImportError as e:
@@ -67,11 +68,13 @@ def get_evaluator(model_name, series=""):
             return Qwen_Evaluator
         elif series == "tgi":  # implement the chat function
             return TGI_Evaluator
+        elif series == "reka":
+            return Reka_Evaluator
 
     l_model_name = model_name.lower()
     if "gemini" in model_name:
         return Gemini_Evaluator
-    if "gpt-" in model_name:
+    elif "gpt-" in model_name:
         # its possible to match gpt-3.5-instruct,
         # but we don't really want to sacrifice more fixed params for that
         return ChatGPT_Evaluator
@@ -86,7 +89,8 @@ def get_evaluator(model_name, series=""):
         return DashScope_Evaluator
     elif "mixtral" in model_name:
         return Mixtral_Evaluator
-
+    elif "reka-" in model_name:
+        return Reka_Evaluator
     return TGI_Evaluator
 
 
