@@ -1,6 +1,6 @@
 import re
 import string
-
+from ..answer_parser import match_response_choices
 
 class Evaluator:
     def __init__(self, choices, model_name, k=-1):
@@ -47,3 +47,6 @@ class Evaluator:
 
     def exact_match(self, pred, target):
         return self.normalize_answer(pred) == self.normalize_answer(target)
+
+    def extract_ans(self, response_str: str):
+        return match_response_choices(response_str, self.converter)

@@ -14,7 +14,7 @@ except ImportError as e:
         "dashscope API not supported, ignore this if you aren't using dashscope"
     )
 from .evaluator import Evaluator
-from ..answer_parser import match_response_choices, cot_match_response_choice
+from ..answer_parser import cot_match_response_choice
 
 class DashScope_Evaluator(Evaluator):
     """
@@ -191,9 +191,6 @@ class DashScope_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-
-    def extract_ans(self, response_str):
-        return match_response_choices(response_str, self.converter)
 
 
 if __name__ == "__main__":

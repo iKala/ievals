@@ -6,7 +6,7 @@ import opencc
 import openai
 from tqdm import tqdm
 from .evaluator import Evaluator
-from ..answer_parser import match_response_choices, cot_match_response_choice
+from ..answer_parser import cot_match_response_choice
 
 
 class GPT_Evaluator(Evaluator):
@@ -178,6 +178,3 @@ class GPT_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-
-    def extract_ans(self, response_str):
-        return match_response_choices(response_str, self.converter)

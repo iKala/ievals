@@ -218,6 +218,3 @@ class TGI_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-
-    def extract_ans(self, response_str):
-        return match_response_choices(response_str, self.converter)

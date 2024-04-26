@@ -13,7 +13,7 @@ except ImportError as e:
 
 
 from .evaluator import Evaluator
-from ..answer_parser import match_response_choices, cot_match_response_choice
+from ..answer_parser import cot_match_response_choice
 
 class Reka_Evaluator(Evaluator):
     """
@@ -136,7 +136,7 @@ class Reka_Evaluator(Evaluator):
                     logging.error(msg)
                     sleep(5)
                     continue
-            print(response)
+
             if "text" in response:
                 response_str = response["text"]
             else:
@@ -193,7 +193,4 @@ class Reka_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-
-    def extract_ans(self, response_str):
-        return match_response_choices(response_str, self.converter)
 

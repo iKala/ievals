@@ -5,7 +5,7 @@ from tqdm import tqdm
 import opencc
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from .evaluator import Evaluator
-from ..answer_parser import match_response_choices, cot_match_response_choice
+from ..answer_parser import cot_match_response_choice
 
 class HF_Chat_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
@@ -145,7 +145,4 @@ class HF_Chat_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-
-    def extract_ans(self, response_str):
-        return match_response_choices(response_str, self.converter)
 
