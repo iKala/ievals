@@ -18,6 +18,8 @@ from ievals.modules.qa_evaluators.azure import Azure_Evaluator
 from ievals.modules.qa_evaluators.oai_complete import GPT_Evaluator
 from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
 from ievals.modules.qa_evaluators.reka_api import Reka_Evaluator
+from ievals.modules.qa_evaluators.groq_api import GroqEvaluator
+from ievals.modules.qa_evaluators.together_api import TogetherEvaluator
 try:
     from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
 except ImportError as e:
@@ -70,6 +72,10 @@ def get_evaluator(model_name, series=""):
             return TGI_Evaluator
         elif series == "reka":
             return Reka_Evaluator
+        elif series == "groq":
+            return GroqEvaluator
+        elif series == "together":
+            return TogetherEvaluator
 
     l_model_name = model_name.lower()
     if "gemini" in model_name:

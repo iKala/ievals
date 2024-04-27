@@ -3,6 +3,9 @@ import re
 
 def match_response_choices(response: str, converter = None):
     pattern = [
+            r'correct answer is:\n\n\n([A-D]).',
+            r'correct answer is:\n\n([A-D]).',
+            r'correct answer is:\n([A-D]).',
             r"正確的答案應該是:.*?\b([A-D])\b",
             r"正確的選項應為:.*?\b([A-D])\b",
             r"答案是\s?選?項?\s?([A-D])",

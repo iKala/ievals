@@ -106,3 +106,47 @@ CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat
 ```
 
 If the mentioned model is private you can pass in your huggingface read token via --api_key argument
+
+## Reka
+
+Before using models from reka please install it via pypi
+
+```bash
+pip install reka
+```
+
+Once installed, you should be able to run:
+
+```bash
+ieval <reka-flash, reka-flash, reka-edge> --api_key "<Reka API Key>"
+```
+
+
+## Groq
+
+Before using models from Groq please install it via pypi
+
+```bash
+pip install groq
+```
+
+Once installed, you should be able to run:
+
+```bash
+ieval llama3-8b-8192 --series groq --api_key "<Groq API : gsk_XXXXX>"
+```
+
+
+## Together
+
+Before using models from Together please install it via pypi
+
+```bash
+pip install together
+```
+
+Once installed, you should be able to run:
+
+```bash
+ieval meta-llama/Llama-3-70b-chat-hf --series together  --api_key "XXX"
+```
