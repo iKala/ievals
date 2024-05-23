@@ -9,12 +9,8 @@ TRADITIONAL_COT = [
     r"答案是(.+?)",
 ]
 
-SIMPLIFIED_COT = [
-    r"答案为(.+?)",
-    r"选项(.+?)是正确的",
-    r"因此，选项(.+?)",
-    r"答案是(.+?)"
-]
+SIMPLIFIED_COT = [r"答案为(.+?)", r"选项(.+?)是正确的", r"因此，选项(.+?)", r"答案是(.+?)"]
+
 
 class Evaluator:
     def __init__(self, choices, model_name, k=-1):

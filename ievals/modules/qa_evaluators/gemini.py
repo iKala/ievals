@@ -7,6 +7,7 @@ from time import sleep
 import google.generativeai as genai
 from .evaluator import Evaluator
 
+
 class Gemini_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(Gemini_Evaluator, self).__init__(choices, model_name, k)
@@ -155,8 +156,9 @@ class Gemini_Evaluator(Evaluator):
                     response_str = ""
 
             if cot:
-                ans_list = self.cot_match_response_choice(response_str,
-                            is_simplified= self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
 
                 if len(ans_list) == 0:
                     correct = 0
@@ -206,4 +208,3 @@ class Gemini_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-

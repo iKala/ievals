@@ -1,12 +1,11 @@
 import os
 import logging
 from time import sleep
+
 try:
     from together import Together
 except ImportError as e:
-    logging.error(
-        "groq not supported, ignore this if you aren't using groq API"
-    )
+    logging.error("groq not supported, ignore this if you aren't using groq API")
 import opencc
 from tqdm import tqdm
 from .evaluator import Evaluator
@@ -123,7 +122,6 @@ class TogetherEvaluator(Evaluator):
                         prompt["content"]
                     )
 
-
             while response is None and timeout_counter <= 30:
                 try:
                     response = self.client.chat.completions.create(
@@ -144,7 +142,9 @@ class TogetherEvaluator(Evaluator):
                 response_str = response.choices[0].message.content
 
             if cot:
-                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
                 if len(ans_list) == 0:
                     correct = 0
                 else:

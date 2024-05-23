@@ -1,12 +1,11 @@
 import os
 import logging
 from time import sleep
+
 try:
     from groq import Groq
 except ImportError as e:
-    logging.error(
-        "groq not supported, ignore this if you aren't using groq API"
-    )
+    logging.error("groq not supported, ignore this if you aren't using groq API")
 import opencc
 from tqdm import tqdm
 from .evaluator import Evaluator
@@ -123,10 +122,11 @@ class GroqEvaluator(Evaluator):
                         prompt["content"]
                     )
 
-
             while response is None and timeout_counter <= 30:
                 try:
-                    response = self.client.with_options(max_retries=5).chat.completions.create(
+                    response = self.client.with_options(
+                        max_retries=5
+                    ).chat.completions.create(
                         messages=full_prompt,
                         model=self.model_name,
                         temperature=0.0,
@@ -144,7 +144,9 @@ class GroqEvaluator(Evaluator):
                 response_str = response.choices[0].message.content
 
             if cot:
-                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
                 if len(ans_list) == 0:
                     correct = 0
                 else:

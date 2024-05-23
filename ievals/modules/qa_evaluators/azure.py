@@ -131,8 +131,9 @@ class Azure_Evaluator(Evaluator):
                 response_str = response.choices[0].message.content
 
             if cot:
-                ans_list = self.cot_match_response_choice(response_str,
-                                    is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
 
                 if len(ans_list) == 0:
                     correct = 0

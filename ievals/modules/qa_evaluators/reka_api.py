@@ -3,6 +3,7 @@ import logging
 from time import sleep
 import opencc
 from tqdm import tqdm
+
 try:
     import reka
 except ImportError as e:
@@ -11,8 +12,8 @@ except ImportError as e:
     )
 
 
-
 from .evaluator import Evaluator
+
 
 class Reka_Evaluator(Evaluator):
     """
@@ -125,10 +126,12 @@ class Reka_Evaluator(Evaluator):
 
             while response is None and timeout_counter <= 30:
                 try:
-                    response = reka.chat(model_name=self.model_name,
-                                        human=text, 
-                                        temperature=0,
-                                        request_output_len=1000 if cot else 400)
+                    response = reka.chat(
+                        model_name=self.model_name,
+                        human=text,
+                        temperature=0,
+                        request_output_len=1000 if cot else 400,
+                    )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
@@ -142,7 +145,9 @@ class Reka_Evaluator(Evaluator):
                 response_str = ""
 
             if cot:
-                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
 
                 if len(ans_list) == 0:
                     correct = 0
@@ -192,4 +197,3 @@ class Reka_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-

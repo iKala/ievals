@@ -239,4 +239,3 @@ class Mixtral_Evaluator(Evaluator):
                 a = self.converter.convert(a)
             prompt += "[INST] " + q + "\n答案： [/INST]" + a + "\n"
         return prompt
-

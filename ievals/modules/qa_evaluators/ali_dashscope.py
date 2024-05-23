@@ -15,6 +15,7 @@ except ImportError as e:
     )
 from .evaluator import Evaluator
 
+
 class DashScope_Evaluator(Evaluator):
     """
     Completion endpoint for instruction based model
@@ -140,7 +141,9 @@ class DashScope_Evaluator(Evaluator):
                 response_str = ""
 
             if cot:
-                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
 
                 if len(ans_list) == 0:
                     correct = 0

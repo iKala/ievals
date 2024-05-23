@@ -6,6 +6,7 @@ import opencc
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from .evaluator import Evaluator
 
+
 class HF_Chat_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(HF_Chat_Evaluator, self).__init__(choices, model_name, k)
@@ -109,8 +110,9 @@ class HF_Chat_Evaluator(Evaluator):
             else:
                 response_str = response
             if cot:  # simplified chinese
-                ans_list = self.cot_match_response_choice(response_str,
-                            is_simplified= self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
                 if len(ans_list) == 0:
                     correct = 0
                 else:
@@ -144,4 +146,3 @@ class HF_Chat_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-

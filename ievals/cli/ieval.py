@@ -20,6 +20,7 @@ from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
 from ievals.modules.qa_evaluators.reka_api import Reka_Evaluator
 from ievals.modules.qa_evaluators.groq_api import GroqEvaluator
 from ievals.modules.qa_evaluators.together_api import TogetherEvaluator
+
 try:
     from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
 except ImportError as e:
