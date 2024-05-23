@@ -10,7 +10,6 @@ except ImportError as e:
 import opencc
 from tqdm import tqdm
 from .evaluator import Evaluator
-from ..answer_parser import cot_match_response_choice
 
 
 class TogetherEvaluator(Evaluator):
@@ -145,7 +144,7 @@ class TogetherEvaluator(Evaluator):
                 response_str = response.choices[0].message.content
 
             if cot:
-                ans_list = cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
                 if len(ans_list) == 0:
                     correct = 0
                 else:

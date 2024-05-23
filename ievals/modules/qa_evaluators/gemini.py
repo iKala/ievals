@@ -6,7 +6,6 @@ from tqdm import tqdm
 from time import sleep
 import google.generativeai as genai
 from .evaluator import Evaluator
-from ..answer_parser import cot_match_response_choice
 
 class Gemini_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
@@ -156,7 +155,7 @@ class Gemini_Evaluator(Evaluator):
                     response_str = ""
 
             if cot:
-                ans_list = cot_match_response_choice(response_str,
+                ans_list = self.cot_match_response_choice(response_str,
                             is_simplified= self.switch_zh_hans)
 
                 if len(ans_list) == 0:
