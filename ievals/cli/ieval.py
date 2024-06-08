@@ -19,11 +19,16 @@ from ievals.modules.qa_evaluators.oai_complete import GPT_Evaluator
 from ievals.modules.qa_evaluators.chatgpt import ChatGPT_Evaluator
 from ievals.modules.qa_evaluators.reka_api import Reka_Evaluator
 from ievals.modules.qa_evaluators.groq_api import GroqEvaluator
+try:
+    from ievals.modules.qa_evaluators.gcp_vertexai import Vertex_Evaluator
+except ImportError as e:
+    logging.error("GCP vertex is not supported due to " + str(e))
+
 from ievals.modules.qa_evaluators.together_api import TogetherEvaluator
 try:
     from ievals.modules.qa_evaluators.mixtral import Mixtral_Evaluator
 except ImportError as e:
-    logging.error("huggingface and qwen models are not supported due to " + str(e))
+    logging.error("mixtral models are not supported due to " + str(e))
 try:
     from ievals.modules.qa_evaluators.hf_chat import HF_Chat_Evaluator
     from ievals.modules.qa_evaluators.hf_base import (
@@ -76,6 +81,8 @@ def get_evaluator(model_name, series=""):
             return GroqEvaluator
         elif series == "together":
             return TogetherEvaluator
+        elif series == "vertexai":
+            return Vertex_Evaluator
 
     l_model_name = model_name.lower()
     if "gemini" in model_name:

@@ -10,12 +10,18 @@ class Evaluator:
         self.puncs = list(string.punctuation)
 
     def format_example(self, line, include_answer=True):
-        example = line["question"]
+        if 'Question' in line:
+            example = line["Question"]
+        else:
+            example = line["question"]
         for choice in self.choices:
             example += f'\n{choice}. {line[f"{choice}"]}'
         example += "\n答案："
         if include_answer:
-            example += f'{line["answer"]}\n\n'
+            if 'Answer' in line:
+                example += f'{line["Answer"]}\n\n'
+            else:
+                example += f'{line["answer"]}\n\n'
         return example
 
     def generate_few_shot_prompt(self, subject, dev_df):

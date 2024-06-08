@@ -13,7 +13,7 @@ def get_exp_setting(dataset):
         from .cmmlu_settings import task_list, subject2name, subject2category
 
         return task_list, subject2name, subject2category
-    elif "/c-eval" in dataset.lower():
+    elif "/ceval" in dataset.lower():
         from .ceval_settings import task_list, subject2name, subject2category
 
         return task_list, subject2name, subject2category
