@@ -14,7 +14,6 @@ except ImportError as e:
         "dashscope API not supported, ignore this if you aren't using dashscope"
     )
 from .evaluator import Evaluator
-from ..answer_parser import cot_match_response_choice
 
 class DashScope_Evaluator(Evaluator):
     """
@@ -141,7 +140,7 @@ class DashScope_Evaluator(Evaluator):
                 response_str = ""
 
             if cot:
-                ans_list = cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
 
                 if len(ans_list) == 0:
                     correct = 0

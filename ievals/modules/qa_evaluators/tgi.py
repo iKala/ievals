@@ -7,8 +7,6 @@ import requests
 import opencc
 from tqdm import tqdm
 from .evaluator import Evaluator
-from ..answer_parser import match_response_choices, cot_match_response_choice
-
 
 class TGI_Evaluator(Evaluator):
     def __init__(
@@ -169,7 +167,7 @@ class TGI_Evaluator(Evaluator):
                     self.messageEndToken
                 )[0]
             if cot:
-                ans_list = cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
+                ans_list = self.cot_match_response_choice(response_str, is_simplified=self.switch_zh_hans)
                 if len(ans_list) == 0:
                     correct = 0
                 else:

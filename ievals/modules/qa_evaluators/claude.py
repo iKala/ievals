@@ -6,7 +6,6 @@ import opencc
 import anthropic
 from tqdm import tqdm
 from .evaluator import Evaluator
-from ..answer_parser import cot_match_response_choice
 
 
 class Claude_Evaluator(Evaluator):
@@ -155,7 +154,7 @@ class Claude_Evaluator(Evaluator):
                 response_str = response.completion
 
             if cot:
-                ans_list = cot_match_response_choice(response_str,
+                ans_list = self.cot_match_response_choice(response_str,
                                             is_simplified= self.switch_zh_hans)
 
                 if len(ans_list) == 0:
