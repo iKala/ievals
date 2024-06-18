@@ -85,28 +85,6 @@ def match_response_choices(response: str, converter=None):
     return ans_list
 
 
-# TRADITIONAL_COT = [
-#     r"答案為(.+?)",
-#     r"選項(.+?)是正確的",
-#     r"因此，選項(.+?)",
-#     r"答案是(.+?)",
-# ]
-# SIMPLIFIED_COT = [r"答案为(.+?)", r"选项(.+?)是正确的", r"因此，选项(.+?)", r"答案是(.+?)"]
-
-
-# def cot_match_response_choice(response_str: str, is_simplified=False):
-#     ans_list = re.findall(r"答案是(.+?)。", response_str)
-#     prompt_choices = TRADITIONAL_COT
-#     if is_simplified:
-#         prompt_choices = SIMPLIFIED_COT
-#     for prompt_regex in prompt_choices:
-#         ans_list = re.findall(prompt_regex, response_str)
-#         if len(ans_list) != 0:
-#             return ans_list
-#     # no answer found
-#     return []
-
-
 def cot_answer_parser(response_str: str, llm_parser):
     """
     Experiment with LLM  parser for chain of thought reasoning based on the method original paper
