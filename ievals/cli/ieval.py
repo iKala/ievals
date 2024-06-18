@@ -93,7 +93,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Run TMMLU+ evals")
     parser.add_argument("model", type=str, help="Name of the eval model")
     parser.add_argument("--series", type=str, default="")
-    parser.add_argument("--dataset", type=str, default="ikala/tmmluplus")
+    parser.add_argument("--dataset", type=str, default="ikala/tmmluplus_cot")
     parser.add_argument("--choices", type=str, default="A,B,C,D")
     parser.add_argument("--top_k", type=int, default=0)
     parser.add_argument("--api_key", type=str, default=None)

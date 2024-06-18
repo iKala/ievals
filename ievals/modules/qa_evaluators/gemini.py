@@ -155,7 +155,7 @@ class Gemini_Evaluator(Evaluator):
                     response_str = ""
 
             if cot:
-                ans_list = re.findall(r"答案是(.+?)。", response_str)
+                ans_list = self.extract_ans(response_str)
                 if self.converter:
                     if len(ans_list) == 0:
                         ans_list = re.findall(r"答案为(.+?)", response_str)

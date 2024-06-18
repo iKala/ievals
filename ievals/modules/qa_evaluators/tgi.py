@@ -167,7 +167,7 @@ class TGI_Evaluator(Evaluator):
                     self.messageEndToken
                 )[0]
             if cot:
-                ans_list = re.findall(r"答案是(.+?)。", response_str)
+                ans_list = self.extract_ans(response_str)
                 if len(ans_list) == 0:
                     ans_list = re.findall(r"答案為(.+?)。", response_str)
                 if len(ans_list) == 0:

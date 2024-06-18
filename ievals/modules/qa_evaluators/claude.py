@@ -153,7 +153,7 @@ class Claude_Evaluator(Evaluator):
                 response_str = response.completion
 
             if cot:
-                ans_list = re.findall(r"答案是(.+?)。", response_str)
+                ans_list = self.extract_ans(response_str)
 
                 if self.converter:  # simplified chinese
                     if len(ans_list) == 0:

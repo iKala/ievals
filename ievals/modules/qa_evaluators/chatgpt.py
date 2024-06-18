@@ -8,6 +8,37 @@ from tqdm import tqdm
 from .evaluator import Evaluator
 
 
+def replace_invalid_brackets(text):
+    # Define a comprehensive dictionary for bracket replacements
+    replacements = {
+        "⟦": "[",  # Mathematical left white square bracket
+        "⟧": "]",  # Mathematical right white square bracket
+        "【": "[",  # Left black lenticular bracket
+        "】": "]",  # Right black lenticular bracket
+        "〖": "[",  # Left white lenticular bracket
+        "〗": "]",  # Right white lenticular bracket
+        "⦃": "{",  # Mathematical left white curly bracket
+        "⦄": "}",  # Mathematical right white curly bracket
+        "❨": "(",  # Medium left parenthesis ornament
+        "❩": ")",  # Medium right parenthesis ornament
+        "⟮": "(",  # Mathematical left flattened parenthesis
+        "⟯": ")",  # Mathematical right flattened parenthesis
+        "（": "(",
+        "）": ")",
+        # Add more replacements as needed
+    }
+
+    def replace_char(match):
+        return replacements.get(
+            match.group(0), match.group(0)
+        )  # No default replacement
+
+    pattern = re.compile("|".join(re.escape(key) for key in replacements.keys()))
+    cleaned_text = pattern.sub(replace_char, text)
+
+    return cleaned_text
+
+
 class ChatGPT_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
         super(ChatGPT_Evaluator, self).__init__(choices, model_name, k)
@@ -26,7 +57,7 @@ class ChatGPT_Evaluator(Evaluator):
         if include_answer:
             if cot:
                 ans = line["answer"]
-                content = "讓我們一步一步思考，\n" + line["explanation"] + f"\n所以答案是{ans}。"
+                content = "讓我們一步一步思考，\n" + line["explaination"] + f"\n所以答案是{ans}。"
                 return [
                     {"role": "user", "content": example},
                     {"role": "assistant", "content": content},
@@ -114,6 +145,17 @@ class ChatGPT_Evaluator(Evaluator):
                         temperature=0.0,
                         max_tokens=800,
                     )
+                except openai.InternalServerError:
+                    for idx, prompt in enumerate(full_prompt):
+                        full_prompt[idx]["content"] = replace_invalid_brackets(
+                            prompt["content"]
+                        )
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=full_prompt,
+                        temperature=0.3,
+                        max_tokens=800,
+                    )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
@@ -125,7 +167,7 @@ class ChatGPT_Evaluator(Evaluator):
             else:
                 response_str = response.choices[0].message.content
             if cot:
-                ans_list = re.findall(r"答案是(.+?)。", response_str)
+                ans_list = self.extract_ans(response_str)
                 if self.converter:  # simplified chinese
                     if len(ans_list) == 0:
                         ans_list = re.findall(r"答案为(.+?)", response_str)
