@@ -1,43 +1,21 @@
-import re
 import os
-import opencc
+import re
 import logging
-from tqdm import tqdm
 from time import sleep
-import google.generativeai as genai
+import openai
+import opencc
+from tqdm import tqdm
 from .evaluator import Evaluator
 
 
-class Gemini_Evaluator(Evaluator):
+class Breeze_Evaluator(Evaluator):
     def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
-        super(Gemini_Evaluator, self).__init__(choices, model_name, k)
-        genai.configure(api_key=api_key)
-
-        self.model = genai.GenerativeModel(
-            model_name,
-            safety_settings=[
-                {
-                    "category": "HARM_CATEGORY_HARASSMENT",
-                    "threshold": "BLOCK_ONLY_HIGH",
-                },
-                {
-                    "category": "HARM_CATEGORY_HATE_SPEECH",
-                    "threshold": "BLOCK_ONLY_HIGH",
-                },
-                {
-                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    "threshold": "BLOCK_ONLY_HIGH",
-                },
-                {
-                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    "threshold": "BLOCK_ONLY_HIGH",
-                },
-            ],
+        super(Breeze_Evaluator, self).__init__(choices, model_name, k)
+        openai.api_key = api_key
+        self.client = openai.OpenAI(
+            base_url="https://api-mtkresearch.com/v1", api_key=api_key
         )
-
-        self.model_name = model_name
         self.converter = None
-        self.switch_zh_hans = switch_zh_hans
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
 
@@ -81,7 +59,10 @@ class Gemini_Evaluator(Evaluator):
                 tmp[0]["content"] = (
                     f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp[0]["content"]
                 )
-            prompt += tmp
+                if self.converter:
+                    tmp[0]["content"] = self.converter.convert(tmp[0]["content"])
+                prompt += tmp
+
         return prompt
 
     def eval_subject(
@@ -121,44 +102,47 @@ class Gemini_Evaluator(Evaluator):
                 )
             response = None
             timeout_counter = 0
-            text = []
-            prev_role = ""
-            for prompt in full_prompt:
-                if prompt["role"] == "system":
-                    text.append(prompt["content"] + "\n")
-                elif prompt["role"] == "user":
-                    if prev_role == "system":
-                        text[-1] += "問題: " + prompt["content"] + "\n"
-                    else:
-                        text.append("問題: " + prompt["content"] + "\n")
-                elif prompt["role"] == "assistant":
-                    text.append(prompt["content"] + "\n")
-                prev_role = prompt["role"]
-            if self.converter:
-                text = [self.converter.convert(seg) for seg in text]
+            if self.converter:  # convert to simplified chinese
+                for idx, prompt in enumerate(full_prompt):
+                    full_prompt[idx]["content"] = self.converter.convert(
+                        prompt["content"]
+                    )
 
             while response is None and timeout_counter <= 30:
                 try:
-                    response = self.model.generate_content(text)
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=full_prompt,
+                        temperature=0.0,
+                        max_tokens=800,
+                    )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
                     logging.error(msg)
                     sleep(5)
                     continue
-
             if response == None:
                 response_str = ""
             else:
-                try:
-                    response_str = response.text
-                except (ValueError, IndexError):
-                    response_str = ""
-
+                response_str = response.choices[0].message.content
+                sleep(10)
             if cot:
-                ans_list = self.cot_match_response_choice(
-                    response_str, is_simplified=self.switch_zh_hans
-                )
+                ans_list = self.extract_ans(response_str)
+                if self.converter:  # simplified chinese
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"答案为(.+?)", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"选项(.+?)是正确的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，选项(.+?)", response_str)
+                else:
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"答案為(.+?)", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"選項(.+?)是正確的", response_str)
+                    if len(ans_list) == 0:
+                        ans_list = re.findall(r"因此，選項(.+?)", response_str)
 
                 if len(ans_list) == 0:
                     correct = 0
@@ -170,30 +154,15 @@ class Gemini_Evaluator(Evaluator):
                         correct = 0
             else:
                 response_str = response_str.strip()
-                if few_shot:
-                    if len(response_str) > 0:
-                        if self.exact_match(response_str, row["answer"]):
-                            correct_num += 1
-                            correct = 1
-                        else:
-                            ans_list = self.extract_ans(response_str)
-                            if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
-                                correct_num += 1
-                                correct = 1
-                            else:
-                                correct = 0
+                if len(response_str) > 0:
+                    ans_list = self.extract_ans(response_str)
+                    if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
+                        correct_num += 1
+                        correct = 1
                     else:
                         correct = 0
                 else:
-                    if len(response_str) > 0:
-                        ans_list = self.extract_ans(response_str)
-                        if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
-                            correct_num += 1
-                            correct = 1
-                        else:
-                            correct = 0
-                    else:
-                        correct = 0
+                    correct = 0
             if save_result_dir:
                 result.append(response_str)
                 score.append(correct)
@@ -208,3 +177,55 @@ class Gemini_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
+
+    def extract_ans(self, response_str):
+        # manually found regex which can be used to parse most of the response
+        # text
+        pattern = [
+            r"([A-D]). ",
+            r"([A-D]).",
+            r"^選([A-D])",
+            r"^選項([A-D])",
+            r"^选([A-D])",
+            r"^选项([A-D])",
+            r"答案是\s?選?項?\s?([A-D])",
+            r"答案為\s?選?項?\s?([A-D])",
+            r"答案應為\s?選?項?\s?([A-D])",
+            r"答案为\s?选?项?\s?([A-D])",
+            r"答案应为\s?选?项?\s?([A-D])",
+            r"答案選\s?選?項?\s?([A-D])",
+            r"答案选\s?选?项?\s?([A-D])",
+            r"答案是:\s?選?項?\s?([A-D])",
+            r"答案應該是:\s?選?項?\s?([A-D])",
+            r"答案应该是:\s?选?项?\s?([A-D])",
+            r"正確的一項是\s?([A-D])",
+            r"正确的一项是\s?([A-D])",
+            r"答案為:\s?選?項?\s?([A-D])",
+            r"答案應為:\s?選?項?\s?([A-D])",
+            r"答案:\s?選?項?\s?([A-D])",
+            r"答案是：\s?選?項?\s?([A-D])",
+            r"答案應該是：\s?選?項?\s?([A-D])",
+            r"答案為：\s?選?項?\s?([A-D])",
+            r"答案應為：\s?選?項?\s?([A-D])",
+            r"答案：\s?選?項?\s?([A-D])",
+            r"答案为:\s?选?项?\s?([A-D])",
+            r"答案应为:\s?选?项?\s?([A-D])",
+            r"答案:\s?选?项?\s?([A-D])",
+            r"答案是：\s?选?项?\s?([A-D])",
+            r"答案应该是：\s?选?项?\s?([A-D])",
+            r"答案为：\s?选?项?\s?([A-D])",
+            r"答案应为：\s?选?项?\s?([A-D])",
+            r"答案：\s?选?项?\s?([A-D])",
+        ]
+        ans_list = []
+        if response_str[0] in ["A", "B", "C", "D"]:
+            ans_list.append(response_str[0])
+        for p in pattern:
+            if self.converter:
+                p = self.converter.convert(p)
+
+            if len(ans_list) == 0:
+                ans_list = re.findall(p, response_str)
+            else:
+                break
+        return ans_list

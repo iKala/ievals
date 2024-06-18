@@ -1,5 +1,15 @@
 import re
 import string
+from ..answer_parser import match_response_choices
+
+TRADITIONAL_COT = [
+    r"答案為(.+?)",
+    r"選項(.+?)是正確的",
+    r"因此，選項(.+?)",
+    r"答案是(.+?)",
+]
+
+SIMPLIFIED_COT = [r"答案为(.+?)", r"选项(.+?)是正确的", r"因此，选项(.+?)", r"答案是(.+?)"]
 
 
 class Evaluator:
@@ -47,3 +57,18 @@ class Evaluator:
 
     def exact_match(self, pred, target):
         return self.normalize_answer(pred) == self.normalize_answer(target)
+
+    def extract_ans(self, response_str: str):
+        return match_response_choices(response_str, self.converter)
+
+    def cot_match_response_choice(self, response_str: str, is_simplified=False):
+        ans_list = self.extract_ans(response_str)
+        prompt_choices = TRADITIONAL_COT
+        if is_simplified:
+            prompt_choices = SIMPLIFIED_COT
+        for prompt_regex in prompt_choices:
+            ans_list = re.findall(prompt_regex, response_str)
+            if len(ans_list) != 0:
+                return ans_list
+        # no answer found
+        return []

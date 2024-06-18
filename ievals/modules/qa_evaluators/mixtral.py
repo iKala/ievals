@@ -3,7 +3,7 @@
 import os
 import re
 from tqdm import tqdm
-import random
+import opencc
 import numpy as np
 import torch
 from transformers import AutoModelForCausalLM, LlamaTokenizer, BitsAndBytesConfig
@@ -239,55 +239,3 @@ class Mixtral_Evaluator(Evaluator):
                 a = self.converter.convert(a)
             prompt += "[INST] " + q + "\n答案： [/INST]" + a + "\n"
         return prompt
-
-    def extract_answer(self, response_str):
-        answer_patterns = [
-            r"([A-D]). ",
-            r"([A-D]).",
-            r"([A-D])。",
-            r"([A-D])。 ",
-            r"^選([A-D])",
-            r"^選項([A-D])",
-            r"^选([A-D])",
-            r"^选项([A-D])",
-            r"答案是\s?選?項?\s?([A-D])",
-            r"答案為\s?選?項?\s?([A-D])",
-            r"答案應為\s?選?項?\s?([A-D])",
-            r"答案選\s?選?項?\s?([A-D])",
-            r"答案是:\s?選?項?\s?([A-D])",
-            r"答案應該是:\s?選?項?\s?([A-D])",
-            r"答案应该是:\s?选?项?\s?([A-D])",
-            r"正確的一項是\s?([A-D])",
-            r"正确的一项是\s?([A-D])",
-            r"答案為:\s?選?項?\s?([A-D])",
-            r"答案應為:\s?選?項?\s?([A-D])",
-            r"答案:\s?選?項?\s?([A-D])",
-            r"答案是：\s?選?項?\s?([A-D])",
-            r"答案應該是：\s?選?項?\s?([A-D])",
-            r"答案為：\s?選?項?\s?([A-D])",
-            r"答案應為：\s?選?項?\s?([A-D])",
-            r"答案：\s?選?項?\s?([A-D])",
-            r"答案为:\s?选?项?\s?([A-D])",
-            r"答案应为:\s?选?项?\s?([A-D])",
-            r"答案:\s?选?项?\s?([A-D])",
-            r"答案是：\s?选?项?\s?([A-D])",
-            r"答案应该是：\s?选?项?\s?([A-D])",
-            r"答案为：\s?选?项?\s?([A-D])",
-            r"答案应为：\s?选?项?\s?([A-D])",
-            r"答案：\s?选?项?\s?([A-D])",
-            r"([A-D])是\s",
-        ]
-        ans_list = []
-        try:
-            if response_str[0] in ["A", "B", "C", "D"]:
-                ans_list.append(response_str[0])
-        except:
-            ans_list.append(response_str)
-        for p in answer_patterns:
-            if self.converter:
-                p = self.converter.convert(p)
-            if len(ans_list) == 0:
-                ans_list = re.findall(p, response_str)
-            else:
-                break
-        return ans_list[0]

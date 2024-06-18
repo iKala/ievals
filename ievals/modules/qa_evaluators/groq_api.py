@@ -1,30 +1,40 @@
-import re
 import os
 import logging
 from time import sleep
+
+try:
+    from groq import Groq
+except ImportError as e:
+    logging.error("groq not supported, ignore this if you aren't using groq API")
 import opencc
-import anthropic
 from tqdm import tqdm
 from .evaluator import Evaluator
 
 
-class Claude_Evaluator(Evaluator):
-    def __init__(self, choices, k, api_key, model_name, switch_zh_hans=False):
-        super(Claude_Evaluator, self).__init__(choices, model_name, k)
-        self.client = anthropic.Anthropic(api_key=api_key)
+class GroqEvaluator(Evaluator):
+    def __init__(
+        self,
+        choices,
+        k,
+        api_key,
+        model_name,
+        systemMessageToken="<|im_start|>system\n",
+        messageEndToken="<|im_end|>",
+        assistantMessageToken="<|im_start|>assistant\n",
+        userMessageToken="<|im_start|>user\n",
+        switch_zh_hans=False,
+    ):
+        super(GroqEvaluator, self).__init__(choices, model_name, k)
+        self.client = Groq(api_key=api_key)
         self.model_name = model_name
+        self.userMessageToken = userMessageToken
+        self.assistantMessageToken = assistantMessageToken
+        self.messageEndToken = messageEndToken
+        self.systemMessageToken = systemMessageToken
         self.converter = None
         self.switch_zh_hans = switch_zh_hans
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
-
-        self.change_to_new_model = None
-        if (
-            "opus" in self.model_name
-            or "sonnet" in self.model_name
-            or "haiku" in self.model_name
-        ):
-            self.change_to_new_model = True
 
     def format_example(self, line, include_answer=True, cot=False):
         example = line["question"]
@@ -54,7 +64,7 @@ class Claude_Evaluator(Evaluator):
         prompt = [
             {
                 "role": "system",
-                "content": f"你是一位專業的中文AI助理，以下是關於{subject}考試單選題，請直接選出正確的答案。",
+                "content": f"你是一位專業的中文AI助理，以下是關於{subject}考試單選題，請選出正確的答案。",
             }
         ]
         k = self.k
@@ -64,7 +74,7 @@ class Claude_Evaluator(Evaluator):
             tmp = self.format_example(dev_df.iloc[i, :], include_answer=True, cot=cot)
             if i == 0:
                 tmp[0]["content"] = (
-                    f"以下是關於{subject}考試單選題，請直接選出正確的答案。\n\n" + tmp[0]["content"]
+                    f"以下是關於{subject}考試單選題，請選出正確的答案。\n\n" + tmp[0]["content"]
                 )
             prompt += tmp
         return prompt
@@ -90,10 +100,9 @@ class Claude_Evaluator(Evaluator):
             few_shot_prompt = [
                 {
                     "role": "system",
-                    "content": f"你是一位專業的中文AI助理，以下是關於{subject_name}考試單選題，請直接選出正確的答案。",
+                    "content": f"你是一位專業的中文AI助理，以下是關於{subject_name}考試單選題，請選出正確的答案。",
                 }
             ]
-
         answers = list(test_df["answer"])
         for row_index, row in tqdm(
             test_df.iterrows(), total=len(test_df), dynamic_ncols=True
@@ -102,44 +111,27 @@ class Claude_Evaluator(Evaluator):
             full_prompt = few_shot_prompt + question
             if not few_shot:
                 full_prompt[-1]["content"] = (
-                    f"以下是關於{subject_name}考試單選題，請直接選出正確的答案。\n\n"
+                    f"以下是關於{subject_name}考試單選題，請選出正確的答案。\n\n"
                     + full_prompt[-1]["content"]
                 )
             response = None
             timeout_counter = 0
-            text = ""
-            for prompt in full_prompt:
-                if prompt["role"] == "system":
-                    text += anthropic.HUMAN_PROMPT + " " + prompt["content"]
-                elif prompt["role"] == "user":
-                    text += anthropic.HUMAN_PROMPT + " " + prompt["content"]
-                elif prompt["role"] == "assistant":
-                    text += anthropic.AI_PROMPT + " " + prompt["content"]
-            text += anthropic.AI_PROMPT
-            if self.converter:
-                text = self.converter.convert(text)
+            if self.converter:  # convert to simplified chinese
+                for idx, prompt in enumerate(full_prompt):
+                    full_prompt[idx]["content"] = self.converter.convert(
+                        prompt["content"]
+                    )
 
             while response is None and timeout_counter <= 30:
                 try:
-                    if self.change_to_new_model:
-                        response = self.client.messages.create(
-                            messages=[
-                                {
-                                    "role": "user",
-                                    "content": text,
-                                }
-                            ],
-                            model=self.model_name,
-                            max_tokens=1200 if cot else 400,
-                        )
-                    else:
-                        response = self.client.completions.create(
-                            prompt=text,
-                            stop_sequences=[anthropic.HUMAN_PROMPT],
-                            model=self.model_name,
-                            temperature=0.1,
-                            max_tokens_to_sample=1200 if cot else 400,
-                        )
+                    response = self.client.with_options(
+                        max_retries=5
+                    ).chat.completions.create(
+                        messages=full_prompt,
+                        model=self.model_name,
+                        temperature=0.0,
+                        max_tokens=800 if cot else 200,
+                    )
                 except Exception as msg:
                     if "timeout=600" in str(msg):
                         timeout_counter += 1
@@ -148,16 +140,13 @@ class Claude_Evaluator(Evaluator):
                     continue
             if response == None:
                 response_str = ""
-            elif self.change_to_new_model:
-                response_str = response.content[0].text
             else:
-                response_str = response.completion
+                response_str = response.choices[0].message.content
 
             if cot:
                 ans_list = self.cot_match_response_choice(
                     response_str, is_simplified=self.switch_zh_hans
                 )
-
                 if len(ans_list) == 0:
                     correct = 0
                 else:

@@ -30,6 +30,7 @@ class TGI_Evaluator(Evaluator):
         self.messageEndToken = messageEndToken
         self.systemMessageToken = systemMessageToken
         self.converter = None
+        self.switch_zh_hans = switch_zh_hans
         if switch_zh_hans:
             self.converter = opencc.OpenCC("t2s.json")
 
@@ -167,17 +168,9 @@ class TGI_Evaluator(Evaluator):
                     self.messageEndToken
                 )[0]
             if cot:
-                ans_list = self.extract_ans(response_str)
-                if len(ans_list) == 0:
-                    ans_list = re.findall(r"答案為(.+?)。", response_str)
-                if len(ans_list) == 0:
-                    ans_list = re.findall(r"選項(.+?)是正確的", response_str)
-                if len(ans_list) == 0:
-                    ans_list = re.findall(r"答案为(.+?)。", response_str)
-                if len(ans_list) == 0:
-                    ans_list = re.findall(r"选项(.+?)是正确的", response_str)
-                if len(ans_list) == 0:
-                    ans_list = re.findall(r"因此，选项(.+?)", response_str)
+                ans_list = self.cot_match_response_choice(
+                    response_str, is_simplified=self.switch_zh_hans
+                )
                 if len(ans_list) == 0:
                     correct = 0
                 else:
@@ -226,48 +219,3 @@ class TGI_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
-
-    def extract_ans(self, response_str):
-        pattern = [
-            r"([A-D]).",
-            r"答案: ([A-D]) ",
-            r"答案：([A-D])",
-            r"([A-D]). ",
-            r"^選([A-D])",
-            r"^选([A-D])",
-            r"^选项([A-D])",
-            r"^選項([A-D])",
-            r"答案是\s?选?项?\s?([A-D])",
-            r"答案为\s?选?项?\s?([A-D])",
-            r"答案应为\s?选?项?\s?([A-D])",
-            r"答案选\s?选?项?\s?([A-D])",
-            r"答案是:\s?选?项?\s?([A-D])",
-            r"答案应该是:\s?选?项?\s?([A-D])",
-            r"答案應該是:\s?选?项?\s?([A-D])",
-            r"正确的一项是\s?([A-D])",
-            r"正確答案是([A-D])",
-            r"正確答案是 ([A-D])",
-            r"正確的一項是\s?([A-D])",
-            r"答案为:\s?选?项?\s?([A-D])",
-            r"答案為:\s?選?項?\s?([A-D])",
-            r"答案应为:\s?选?项?\s?([A-D])",
-            r"答案:\s?选?项?\s?([A-D])",
-            r"答案是：\s?选?项?\s?([A-D])",
-            r"答案应该是：\s?选?项?\s?([A-D])",
-            r"答案應該是：\s?選?項?\s?([A-D])",
-            r"答案为：\s?选?项?\s?([A-D])",
-            r"答案应为：\s?选?项?\s?([A-D])",
-            r"答案：\s?选?项?\s?([A-D])",
-        ]
-        ans_list = []
-        if response_str[0] in ["A", "B", "C", "D"]:
-            ans_list.append(response_str[0])
-        for p in pattern:
-            if self.converter:
-                p = self.converter.convert(p)
-
-            if len(ans_list) == 0:
-                ans_list = re.findall(p, response_str)
-            else:
-                break
-        return ans_list
