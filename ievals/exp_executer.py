@@ -34,7 +34,6 @@ def run_exp(
 ):
     model_name_path = model_name.replace("/", "_")
     save_result_dir = None
-
     if cache_path:
         os.makedirs(f"{cache_path}", exist_ok=True)
         os.makedirs(f"{cache_path}/{model_name_path}", exist_ok=True)
@@ -44,6 +43,7 @@ def run_exp(
     postfix = model_name.split("/")[-1]
     prefix_name = dataset.split("/")[-1]
     result_cache = f"{prefix_name}_{postfix_name}.tsv"
+
     if switch_zh_hans:
         result_cache = f"{prefix_name}_{postfix_name}_zhs.tsv"
     if os.path.exists(result_cache):
@@ -62,7 +62,7 @@ def run_exp(
         dev = load_dataset(dataset, task)["train"]
         dev_df = pd.DataFrame([dict(row) for row in dev])
 
-        accuracy = evaluator.eval_subject(
+        accuracy = evaluator.eval_subject_v2(
             zh_name,
             test_df,
             dev_df=dev_df,

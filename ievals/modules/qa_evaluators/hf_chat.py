@@ -146,3 +146,76 @@ class HF_Chat_Evaluator(Evaluator):
                 index=False,
             )
         return correct_ratio
+
+    def eval_subject_v2(
+        self,
+        subject_name,
+        test_df,
+        dev_df=None,
+        few_shot=False,
+        save_result_dir=None,
+        cot=False,
+    ):
+        correct_num = 0
+        if save_result_dir:
+            result = []
+            score = []
+
+        q_history = None
+        if few_shot:
+            history = self.generate_few_shot_prompt(subject_name, dev_df, cot=cot)
+        else:
+            history = []
+        answers = list(test_df["answer"])
+        for row_index, row in tqdm(test_df.iterrows(), total=len(test_df)):
+            question = self.format_example(row, include_answer=False, cot=cot)
+            response = None
+            timeout_counter = 0
+            text = ""
+
+            if self.converter:
+                question = self.converter.convert(question)
+                history = [self.converter.convert(hist) for hist in history]
+            # better to check for history accuracy
+            while response is None and timeout_counter <= 30:
+                try:
+                    response, _ = self.model.chat(
+                        self.tokenizer, question, history=history
+                    )
+                except Exception as msg:
+                    if "timeout=600" in str(msg):
+                        timeout_counter += 1
+                    print(msg)
+                    sleep(5)
+                    continue
+
+            if response == None:
+                response_str = ""
+            else:
+                response_str = response
+
+            response_str = response_str.strip()
+            if len(response_str) > 0:
+                ans_list = self.llm_parsing_ans(response_str)
+                if len(ans_list) > 0 and (ans_list[-1] == row["answer"]):
+                    correct_num += 1
+                    correct = 1
+                else:
+                    correct = 0
+            else:
+                correct = 0
+
+            if save_result_dir:
+                result.append(response_str)
+                score.append(correct)
+        correct_ratio = 100 * correct_num / len(answers)
+
+        if save_result_dir:
+            test_df["model_output"] = result
+            test_df["correctness"] = score
+            test_df.to_csv(
+                os.path.join(save_result_dir, f"{subject_name}_val.csv"),
+                encoding="utf-8",
+                index=False,
+            )
+        return correct_ratio

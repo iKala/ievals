@@ -1,5 +1,8 @@
 import re
+import os
 import string
+import google.generativeai as genai
+from time import sleep
 from ..answer_parser import match_response_choices
 
 TRADITIONAL_COT = [
@@ -18,6 +21,27 @@ class Evaluator:
         self.model_name = model_name
         self.k = k
         self.puncs = list(string.punctuation)
+        self.parsing_model = genai.GenerativeModel(
+            "gemini-1.5-flash",
+            safety_settings=[
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_ONLY_HIGH",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_ONLY_HIGH",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_ONLY_HIGH",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_ONLY_HIGH",
+                },
+            ],
+        )
 
     def format_example(self, line, include_answer=True):
         example = line["question"]
@@ -70,5 +94,28 @@ class Evaluator:
             ans_list = re.findall(prompt_regex, response_str)
             if len(ans_list) != 0:
                 return ans_list
+        # no answer found
+        return []
+
+    def llm_parsing_ans(self, response_str: str):
+        extract_str = f"""Extract the following RESPONSE final answer, your answer should be the one which match any of these valid category:
+        - A
+        - B
+        - C
+        - D
+        DO not output anything than the above valid category, just output one that match the answer, remove bracket "< >" and newline "\n" symbol if exist
+        RESPONSE: {response_str}"""
+
+        genai.configure(api_key=os.environ["API_KEY"])
+        ans_list = self.parsing_model.generate_content(extract_str)
+        sleep(5)
+
+        try:
+            ans_list = ans_list.text
+            ans_list = ans_list.strip()
+            if len([ans_list]) != 0:
+                return [ans_list]
+        except ValueError:
+            return []
         # no answer found
         return []
