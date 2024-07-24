@@ -55,24 +55,39 @@ ieval gpt-3.5-turbo-instruct --series openai_complete --api_key "<Your OpenAI pl
 
 
 ## Gemini Pro
-
+Use str parsing the answers -
 ```bash
 ieval gemini-pro  --api_key "<Your API Key from https://ai.google.dev/>" --top_k 5
+```
+
+Use LLM parsing the answers -
+```bash
+API_KEY="<Gemini API Key>" ieval gemini-pro  --api_key "<Your API Key from https://ai.google.dev/>" --top_k 5
 ```
 
 Currently we do not support models from vertex AI yet. So PaLM (bison) series are not supported
 
 ## Anthropic (instant, v1.3, v2.0, v3.0 Haiku, v3.0 Opus, v3.0 Sonnet)
-
+Use str parsing the answers -
 ```bash
 ieval claude-instant-1  --api_key "<Anthropic API keys>"
 ```
 
-## Azure OpenAI Model
+Use LLM parsing the answers -
+```bash
+API_KEY="<Gemini API Key>" ieval claude-instant-1  --api_key "<Anthropic API keys>"
+```
 
+## Azure OpenAI Model
+Use str parsing the answers -
 ```bash
 export AZURE_OPENAI_ENDPOINT="https://XXXX.azure.com/"
 ieval <your azure model name> --series azure --api_key "<Your API Key>" --top_k 5
+```
+
+Use LLM parsing the answers -
+```bash
+API_KEY="<Gemini API Key>" ieval <your azure model name> --series azure --api_key "<Your API Key>" --top_k 5
 ```
 
 We haven't experimented with instruction based model from azure yet, so for instruction based models, you will have to fallback to openai's models
@@ -86,15 +101,20 @@ pip install dashscope==1.13.6
 ```
 
 Once installed, you should be able to run:
-
+Use str parsing the answers -
 ```bash
 ieval <Your model name> --api_key "<Dash Scope API>"
+```
+
+Use LLM parsing the answers -
+```bash
+API_KEY="<Gemini API Key>" ieval <Your model name> --api_key "<Dash Scope API>"
 ```
 
 Supported models : qwen-turbo, qwen-plus, qwen-max, qwen-plus-v1, bailian-v1
 
 ## Qwen models or other local models
-
+Use str parsing the answers -
 ```bash
 CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat
 ```
@@ -103,6 +123,11 @@ or
 
 ```bash
 CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat
+```
+
+Use LLM parsing the answers -
+```bash
+API_KEY="<Gemini API Key>" CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat
 ```
 
 If the mentioned model is private you can pass in your huggingface read token via --api_key argument
