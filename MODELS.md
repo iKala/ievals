@@ -62,7 +62,7 @@ ieval gemini-pro  --api_key "<Your API Key from https://ai.google.dev/>" --top_k
 
 Use LLM parsing the answers -
 ```bash
-API_KEY="<Gemini API Key>" ieval gemini-pro  --api_key "<Your API Key from https://ai.google.dev/>" --top_k 5
+API_KEY="<Gemini API Key>" ieval gemini-pro  --api_key "<Your API Key from https://ai.google.dev/>" --top_k 5 --parsing_method llm
 ```
 
 Currently we do not support models from vertex AI yet. So PaLM (bison) series are not supported
@@ -75,7 +75,7 @@ ieval claude-instant-1  --api_key "<Anthropic API keys>"
 
 Use LLM parsing the answers -
 ```bash
-API_KEY="<Gemini API Key>" ieval claude-instant-1  --api_key "<Anthropic API keys>"
+API_KEY="<Gemini API Key>" ieval claude-instant-1  --api_key "<Anthropic API keys>" --parsing_method llm
 ```
 
 ## Azure OpenAI Model
@@ -87,7 +87,7 @@ ieval <your azure model name> --series azure --api_key "<Your API Key>" --top_k 
 
 Use LLM parsing the answers -
 ```bash
-API_KEY="<Gemini API Key>" ieval <your azure model name> --series azure --api_key "<Your API Key>" --top_k 5
+API_KEY="<Gemini API Key>" ieval <your azure model name> --series azure --api_key "<Your API Key>" --top_k 5 --parsing_method llm
 ```
 
 We haven't experimented with instruction based model from azure yet, so for instruction based models, you will have to fallback to openai's models
@@ -127,7 +127,7 @@ CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat
 
 Use LLM parsing the answers -
 ```bash
-API_KEY="<Gemini API Key>" CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat
+API_KEY="<Gemini API Key>" CUDA_VISIBLE_DEVICES=1 ieval Qwen/Qwen-7B-Chat --series hf_chat --parsing_method llm
 ```
 
 If the mentioned model is private you can pass in your huggingface read token via --api_key argument

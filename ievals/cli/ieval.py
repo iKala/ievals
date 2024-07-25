@@ -107,6 +107,7 @@ def get_parser():
     parser.add_argument("--series", type=str, default="")
     parser.add_argument("--dataset", type=str, default="ikala/tmmluplus")
     parser.add_argument("--choices", type=str, default="A,B,C,D")
+    parser.add_argument("--parsing_method", choices=['llm', 'string'], default="string")
     parser.add_argument("--top_k", type=int, default=0)
     parser.add_argument("--api_key", type=str, default=None)
     parser.add_argument("--max_samples", type=int, default=None)
@@ -207,9 +208,17 @@ def main():
     if args.switch_zh_hans:
         cache_path += "_zhs"
 
+    if args.parsing_method == 'llm':
+        try:
+            eval_func = eval_ins.eval_subject_v2
+        except AttributeError:
+            raise AttributeError("Model does not support LLM parsing method")
+    else:
+        eval_func = eval_ins.eval_subject
     run_exp(
         eval_ins,
         model_name,
+        eval_func,
         args.dataset,
         cot=args.cot,
         few_shot=args.top_k > 0,

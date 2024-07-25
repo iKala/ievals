@@ -24,6 +24,7 @@ def get_exp_setting(dataset):
 def run_exp(
     evaluator,
     model_name,
+    eval_func,
     dataset,
     postfix_name="tgi",
     cache_path=".cache",
@@ -62,7 +63,7 @@ def run_exp(
         dev = load_dataset(dataset, task)["train"]
         dev_df = pd.DataFrame([dict(row) for row in dev])
 
-        accuracy = evaluator.eval_subject_v2(
+        accuracy = eval_func(
             zh_name,
             test_df,
             dev_df=dev_df,
