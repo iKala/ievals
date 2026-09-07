@@ -7,6 +7,10 @@ iEvals is a framework for evaluating chinese large language models (LLMs), espec
 
 Currently, we only support evaluation for [TMMLU+](https://huggingface.co/datasets/ikala/tmmluplus), however in the future we are exploring more domain, ie knowledge extensive dataset (CMMLU, C-Eval) as well as context retrieval and multi-conversation dataset.
 
+## Dataset version note
+
+TMMLU+ now has a **v1.1** release: the question set was systematically re-verified, with 197 questions having their answer corrected and 539 questions removed for being defective or unresolvable. `ievals` currently loads whichever revision is tagged `main` on the dataset repo; see [Dataset Versions](https://huggingface.co/datasets/ikala/tmmluplus#dataset-versions) on the dataset page for what changed between v1.0 and v1.1.
+
 # Installation
 
 ```bash
@@ -21,14 +25,6 @@ ieval <model name> <series: optional> --top_k <numbers of incontext examples>
 
 For more details please refer to [models](MODELS.md) section
 
-# Coming soon
-
-- Chain of Thought (CoT) with few shot
-
-- Arxiv paper : detailed analysis on model interior and exterior relations
-
-- More tasks
-
 # Citation
 
 ```
@@ -40,9 +36,12 @@ For more details please refer to [models](MODELS.md) section
 }
 ```
 
-## Disclaimer
+## About iKala
 
-This is not an officially supported iKala product.
+iKala helps enterprises make better, faster decisions by embedding AI and data at the core of their business. We support AI transformation by helping organizations move from data to decisions, delivering full AI solutions that combine their first-party data with iKala's intelligence built on billions of global social signals.
 
-This research code is provided "as-is" to the broader research community.
-iKala does not promise to maintain or otherwise support this code in any way.
+Headquartered in Taiwan with a global footprint, iKala serves over 1,000 enterprises and 50,000 brands across more than 190 countries, including Fortune 500 companies.
+
+<img src="https://huggingface.co/datasets/patrick000517/Test/resolve/main/ikala_logo.png" alt="iKala logo" width="20" style="vertical-align: middle; border-radius: 4px;" /> iKala Official Website: [ikala.ai](https://ikala.ai)<br />
+<img src="https://huggingface.co/datasets/patrick000517/Test/resolve/main/kolr_logo.png" alt="Kolr logo" width="20" style="vertical-align: middle; border-radius: 4px;" /> Kolr Official Website: [kolr.ai](https://kolr.ai)<br />
+<img src="https://huggingface.co/datasets/patrick000517/Test/resolve/main/kuroma_logo.png" alt="Kuroma logo" width="20" style="vertical-align: middle; border-radius: 4px;" /> Kuroma Official Website: [kuroma.ai](https://kuroma.ai)
